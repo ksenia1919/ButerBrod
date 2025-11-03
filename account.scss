@@ -1,0 +1,72 @@
+body {
+	background-color: #f5ebdc;
+}
+
+label {
+	color: #502314;
+	font-weight: 700;
+	font-size: 22px;
+}
+
+button {
+	border-radius: 40px !important;
+	padding: 10px 30px !important;
+}
+
+.close {
+	top: 30px;
+	background-color: rgba(255, 255, 255, 0) !important;
+}
+
+.nav-tabs {
+	margin-bottom: 20px;
+}
+.form-container {
+	max-width: 600px;
+	margin: auto;
+}
+.logout-btn {
+	margin-top: 20px;
+}
+.order-card {
+	margin-bottom: 20px;
+}
+.order-content {
+	margin-top: 10px;
+}
+.card {
+	border-radius: 20px !important;
+}
+.card-body {
+	background-color: #faf5ed;
+	color: #502314 !important;
+	border-radius: 20px !important;
+	border: 2px solid #50231460;
+}
+
+.order-card {
+	border-radius: 20px !important;
+}
+
+.card-title {
+	font-size: 25px;
+	font-weight: 700;
+}
+
+.card-text {
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.button-pod {
+	margin-top: 20px !important;
+}
+
+.modal-content {
+	color: #502314;
+}
+
+.tab-content {
+	max-height: 400px; /* Укажите желаемую высоту */
+	overflow-y: auto; /* Добавляет вертикальную прокрутку, если содержимое не вмещается */
+}

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Main</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="header.css" />
+    </head>
+    <style>
+        .btn:focus,
+        .btn:focus-visible,
+        button:focus,
+        button:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Убираем обводку при активном состоянии (нажатии мышью) */
+        .btn:active,
+        button:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+    <body>
+        <header>
+            <h1>Buter<span>Brod</span></h1>
+            <div class="navbar">
+                <div class="menu-toggle" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu">
+                    <li>
+                        <a
+                            style="color: #fb9300; font-weight: bold"
+                            href="index.html"
+                            >Главная</a
+                        >
+                    </li>
+                    <li><a href="menu.html">Меню</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                    <li>
+                        <div class="button_mobile">
+                            <div
+                                id="mobileCartContainer"
+                                style="display: flex; align-items: center"
+                            >
+                                <img
+                                    src="image/Combined-Shape.png"
+                                    alt="Cart Image"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                    "
+                                />
+                                <a
+                                    href="Cast.html"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                        margin-left: 5px;
+                                        color: #575757;
+                                        font-size: 18px;
+                                        font-family: 'Poppins', sans-serif;
+                                        font-weight: 500;
+                                    "
+                                    >Покупки</a
+                                >
+                            </div>
+                            <div
+                                style="color: black"
+                                id="mobileUsernameContainer"
+                            ></div>
+                            <button
+                                id="mobileAccountButton"
+                                class="btn btn-primary account"
+                            >
+                                Войти
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="modal_account">
+                <div
+                    style="
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        color: white;
+                        font-size: 20px;
+                    "
+                >
+                    <div class="button_pc">
+                        <div
+                            id="cartContainer"
+                            style="display: flex; align-items: center"
+                        >
+                            <img
+                                src="image/Combined-Shape.png"
+                                alt="Cart Image"
+                                style="
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                "
+                            />
+                            <a
+                                href="Cast.html"
+                                style="
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                    margin-left: 5px;
+                                    color: #575757;
+                                    font-size: 18px;
+                                    font-family: 'Poppins', sans-serif;
+                                    font-weight: 500;
+                                "
+                                >Покупки</a
+                            >
+                        </div>
+                        <div style="color: black" id="usernameContainer"></div>
+                        <button
+                            id="accountButton"
+                            class="btn btn-primary account"
+                        >
+                            Войти
+                        </button>
+                    </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            // Загрузка данных пользователя из сессии
+                            $.ajax({
+                                type: "GET",
+                                url: "php/check_session.php",
+                                dataType: "json",
+                                encode: true,
+                            }).done(function (data) {
+                                if (data.authenticated) {
+                                    var usernameContainer =
+                                        $("#usernameContainer");
+                                    if (
+                                        usernameContainer.text().trim() === ""
+                                    ) {
+                                        // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                        var firstName = data.name
+                                            .trim()
+                                            .charAt(0)
+                                            .toUpperCase();
+                                        usernameContainer.text(firstName);
+                                        // Устанавливаем стили для контейнера с буквой
+                                        usernameContainer.css({
+                                            "background-color": "#FB9333",
+                                            "border-radius": "50%",
+                                            width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                            height: "60px",
+                                            display: "flex",
+                                            "justify-content": "center",
+                                            "align-items": "center",
+                                            "font-family":
+                                                "Poppins, sans-serif",
+                                            "font-weight": "500",
+                                            "font-style": "normal",
+                                            "font-size": "32px",
+                                            color: "white",
+                                        });
+                                        // Создаем ссылку на страницу аккаунта и оборачиваем ею содержимое usernameContainer
+                                        var accountLink = $(
+                                            '<a style="text-decoration:none;">'
+                                        )
+                                            .attr("href", "account.html")
+                                            .append(
+                                                usernameContainer.contents()
+                                            );
+                                        usernameContainer
+                                            .empty()
+                                            .append(accountLink);
+                                    }
+                                    $("#accountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                    $("#cartContainer").show(); // Показываем блок корзины
+                                } else {
+                                    $("#cartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                    $("#accountButton").show(); // Показываем кнопку "Аккаунт"
+                                }
+                            });
+                        });
+                    </script>
+
+                    <script>
+                        $(document).ready(function () {
+                            // Загрузка данных пользователя из сессии
+                            $.ajax({
+                                type: "GET",
+                                url: "php/check_session.php",
+                                dataType: "json",
+                                encode: true,
+                            }).done(function (data) {
+                                if (data.authenticated) {
+                                    var usernameContainer = $(
+                                        "#mobileUsernameContainer"
+                                    );
+                                    if (
+                                        usernameContainer.text().trim() === ""
+                                    ) {
+                                        // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                        var firstName = data.name
+                                            .trim()
+                                            .charAt(0)
+                                            .toUpperCase();
+                                        usernameContainer.text(firstName);
+                                        // Устанавливаем стили для контейнера с буквой
+                                        usernameContainer.css({
+                                            "background-color": "#FB9333",
+                                            "border-radius": "50%",
+                                            width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                            height: "60px",
+                                            display: "flex",
+                                            "justify-content": "center",
+                                            "align-items": "center",
+                                            "font-family":
+                                                "Poppins, sans-serif",
+                                            "font-weight": "500",
+                                            "font-style": "normal",
+                                            "font-size": "32px",
+                                            color: "white",
+                                            cursor: "pointer", // Добавляем стиль курсора
+                                            margin: "0 auto",
+                                        });
+                                    }
+                                    $("#mobileAccountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                    $("#mobileCartContainer").show(); // Показываем блок корзины
+
+                                    // Добавляем обработчик события click для перенаправления на account.html
+                                    usernameContainer.click(function () {
+                                        window.location.href = "account.html";
+                                    });
+                                } else {
+                                    $("#mobileCartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                    $("#mobileAccountButton").show(); // Показываем кнопку "Аккаунт"
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+
+                <div id="modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2 style="color: #fb9300">Регистрация</h2>
+                        <form id="registrationForm" method="post">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="name"
+                                    name="name"
+                                    minlength="5"
+                                    placeholder="Введите имя"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Введите почту"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <input
+                                    type="tel"
+                                    class="form-control"
+                                    id="phone"
+                                    name="phone"
+                                    minlength="10"
+                                    placeholder="Введите телефон"
+                                />
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                Зарегистрироваться
+                            </button>
+                            <div id="registrationResult"></div>
+                        </form>
+
+                        <p>
+                            У вас уже есть аккаунт?<a
+                                href="#"
+                                style="color: rgb(46, 84, 255)"
+                                id="loginLink"
+                                >Авторизуйтесь</a
+                            >
+                        </p>
+                    </div>
+                </div>
+
+                <div id="loginForm" class="modal" style="display: none">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2 style="color: #fb9300">Авторизация</h2>
+                        <form id="authForm" method="post">
+                            <div class="form-group">
+                                <input
+                                    type="tel"
+                                    class="form-control"
+                                    id="loginPhone"
+                                    name="phone"
+                                    minlength="10"
+                                    placeholder="Введите номер телефона"
+                                />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Войти
+                            </button>
+                            <div id="loginResult"></div>
+                        </form>
+
+                        <p>
+                            Нет аккаунта?<a
+                                href="#"
+                                style="color: rgb(46, 84, 255)"
+                                id="registerLink"
+                                >Зарегистрируйтесь</a
+                            >
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var registrationForm =
+                    document.getElementById("registrationForm");
+                var nameInput = document.getElementById("name");
+                var emailInput = document.getElementById("email");
+                var phoneInput = document.getElementById("phone");
+                var submitButton = document.querySelector(
+                    "#registrationForm button[type='submit']"
+                );
+
+                // Функция для проверки заполненности всех полей формы регистрации
+                function checkRegistrationForm() {
+                    if (
+                        nameInput.value.trim() !== "" &&
+                        emailInput.value.trim() !== "" &&
+                        phoneInput.value.trim() !== ""
+                    ) {
+                        submitButton.removeAttribute("disabled");
+                    } else {
+                        submitButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Вызываем функцию проверки при изменении содержимого полей
+                nameInput.addEventListener("input", checkRegistrationForm);
+                emailInput.addEventListener("input", checkRegistrationForm);
+                phoneInput.addEventListener("input", checkRegistrationForm);
+
+                // Проверяем форму при загрузке страницы
+                checkRegistrationForm();
+
+                var authForm = document.getElementById("authForm");
+                var loginPhoneInput = document.getElementById("loginPhone");
+                var loginButton = document.querySelector(
+                    "#authForm button[type='submit']"
+                );
+
+                // Функция для проверки заполненности всех полей формы авторизации
+                function checkAuthForm() {
+                    if (loginPhoneInput.value.trim() !== "") {
+                        loginButton.removeAttribute("disabled");
+                    } else {
+                        loginButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Вызываем функцию проверки при изменении содержимого поля
+                loginPhoneInput.addEventListener("input", checkAuthForm);
+
+                // Проверяем форму при загрузке страницы
+                checkAuthForm();
+            });
+        </script>
+
+        <script>
+            function toggleMenu() {
+                var menu = document.querySelector(".menu");
+                menu.style.display =
+                    menu.style.display === "none" ? "flex" : "none";
+            }
+        </script>
+
+        <script src="php/script.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="script/modal_window.js"></script>
+        <script src="script/register.js"></script>
+        <script src="script/login.js"></script>
+        <div class="main">
+            <div class="main_text">
+                <div
+                    style="
+                        background-color: #fff0dc;
+                        width: 205px;
+                        padding: 12px 20px;
+                        border-radius: 100px;
+                    "
+                >
+                    <h1
+                        style="
+                            color: #fb9333;
+                            font-size: 16px;
+                            text-align: center;
+                            font-weight: 600;
+                        "
+                    >
+                        #1 Лучшие во всем
+                    </h1>
+                </div>
+                <div id="adminPanelLink"></div>
+
+                <script>
+                    // Создаем AJAX-запрос к вашему PHP-файлу
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("GET", "check_admin.php", true);
+
+                    // Обработчик события при получении ответа от сервера
+                    xhr.onload = function () {
+                        if (xhr.status >= 200 && xhr.status < 400) {
+                            // Получаем данные из ответа в формате JSON
+                            var response = JSON.parse(xhr.responseText);
+
+                            // Проверяем, является ли пользователь администратором
+                            if (response.isAdmin) {
+                                // Если пользователь администратор, создаем ссылку на админ панель
+                                var adminPanelLink =
+                                    document.getElementById("adminPanelLink");
+                                adminPanelLink.innerHTML =
+                                    '<a href="admin.php">Перейти в админ панель</a>';
+
+                                // Автоматически нажимаем на ссылку
+                                adminPanelLink.querySelector("a").click();
+                            }
+                        }
+                    };
+
+                    // Отправляем запрос
+                    xhr.send();
+                </script>
+                <div class="text_main">
+                    <h1>
+                        <span style="color: #fb9333"
+                            >Наслаждайтесь <br />
+                            вкусной</span
+                        >
+                        едой <br />
+                        вместе с нами
+                    </h1>
+                    <p>
+                        Представьте, что вам не нужно напрягаться, потому что
+                        <br />
+                        мы обеспечим вас вкусной едой!
+                    </p>
+                    <a class="zakaz" href="menu.html">Заказать еду</a>
+                </div>
+                <div class="reviews">
+                    <ul>
+                        <li>
+                            <span>5.000+</span>
+                            <p>Клиентов</p>
+                        </li>
+                        <li>
+                            <span>8.000+</span>
+                            <p>Доставка</p>
+                        </li>
+                        <li>
+                            <span>1.000+</span>
+                            <p>Рейтинг</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="main_photo">
+                <img width="650" src="image/woman.png" alt="" />
+            </div>
+        </div>
+
+        <div>
+            <div class="info_text">
+                <div class="text">
+                    <h1>
+                        Почему мы выбираем <br />
+                        для вас<span> здоровое питание</span>
+                    </h1>
+                    <p>
+                        Мы продолжаем последовательно выбирать и поддерживать
+                        качество изделий, чтобы они оставались свежими, когда вы
+                        их едите.
+                    </p>
+                </div>
+
+                <div class="eat">
+                    <div class="card_eat">
+                        <img
+                            style="margin-bottom: 50px"
+                            src="image/eat_01.png"
+                            alt=""
+                        />
+                        <h1>Наше производство</h1>
+                        <p>
+                            Прямо из собственного сада, который разбит в каждой
+                            провинции, где есть наши точки.
+                        </p>
+                        <div class="button_eat">
+                            <a href="about.html">Узнать больше</a>
+                            <img src="image/Arrow - Right.png" alt="" />
+                        </div>
+                    </div>
+                    <div class="card_eat">
+                        <img
+                            style="margin-bottom: 50px"
+                            src="image/eat_02.png"
+                            alt=""
+                        />
+                        <h1>Здоровое питание</h1>
+                        <p>
+                            Заботимся о наших клиентах и об их предпочтениях, с
+                            гарантией высочайшего качества.
+                        </p>
+                        <div class="button_eat">
+                            <a href="about.html">Узнать больше</a>
+                            <img src="image/Arrow - Right.png" alt="" />
+                        </div>
+                    </div>
+                    <div class="card_eat">
+                        <img
+                            style="margin-bottom: 50px"
+                            src="image/eat_03.png"
+                            alt=""
+                        />
+                        <h1>100 лучших брендов</h1>
+                        <p>
+                            Мы являемся одним из лучших брендов в секторе
+                            продуктов питания в Беларуси.
+                        </p>
+                        <div class="button_eat">
+                            <a href="about.html">Узнать больше</a>
+                            <img src="image/Arrow - Right.png" alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="font">
+                    <div class="info_reviews">
+                        <div>
+                            <h1>Что люди говорят <span>о нас</span></h1>
+                            <p>
+                                Мы будем очень рады, если вы останетесь довольны
+                                нашим сервисом и продукцией, давайте прочитаем
+                                частые отзывы клиентов, купивших нашу продукцию.
+                            </p>
+                            <div style="margin: 32px 0 24px 0">
+                                <span
+                                    style="
+                                        color: black;
+                                        font-weight: 700;
+                                        font-size: 48px;
+                                        font-family: Raleway, sans-serif;
+                                    "
+                                    id="review_counter"
+                                >
+                                    01
+                                </span>
+                                <span
+                                    style="
+                                        color: #585858 !important;
+                                        font-size: 16px !important;
+                                    "
+                                    >/05</span
+                                >
+                            </div>
+                            <div class="buttons">
+                                <button class="left btn-custom-outline">
+                                    <img src="image/left.png" alt="" />
+                                </button>
+                                <button class="right btn-custom-outline">
+                                    <img src="image/rigth.png" alt="" />
+                                </button>
+                            </div>
+                        </div>
+                        <div class="review_block">
+                            <div class="review">
+                                <div class="avatar">
+                                    <img src="image/card_1.png" alt="" />
+                                </div>
+                                <h2 class="username">Александра</h2>
+                                <p class="review-text">
+                                    Ваш магазин бутербродов — это просто находка
+                                    для меня! Я ценю ваше внимание к качеству
+                                    продуктов и вежливый сервис.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu_text">
+            <h1>МЕНЮ, КОТОРОЕ ЗАСТАВИТ ВАС ВЛЮБИТЬСЯ</h1>
+            <h2>
+                Наслаждайтесь лучшим меню <br />
+                и получайте <span style="color: #fb9333">скидки</span>
+            </h2>
+        </div>
+        <div class="menu_card">
+            <div id="tekst_sverhu_kartinki">
+                <img src="image/menu_01.png" alt="" />
+
+                <div class="tekst_sverhu_kartinki_1">
+                    <span>Для студентов действуют скидки каждый день</span>
+                </div>
+            </div>
+            <div id="tekst_sverhu_kartinki">
+                <img src="image/menu_02.png" alt="" />
+
+                <div class="tekst_sverhu_kartinki_1">
+                    <span>Приходите поесть в уютном месте у нас</span>
+                </div>
+            </div>
+            <div id="tekst_sverhu_kartinki">
+                <img src="image/menu_03.png" alt="" />
+
+                <div class="tekst_sverhu_kartinki_1">
+                    <span>Откройте для себя необывчные сочетания</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="subscribe_block">
+            <div class="menu_text" style="margin: 0 !important">
+                <h1 style="margin: 0 !important">Наша подписка</h1>
+                <h2>
+                    Подпишитесь чтобы получать <br />
+                    акции и скидки от нас
+                </h2>
+                <p style="color: #575757; font-weight: 500">
+                    Мы рекомендуем вам подписаться на нашу промо-программу,
+                    <br />
+                    оставьте свой e-mail ниже, чтобы получать ежедневные <br />
+                    обновления о нас
+                </p>
+            </div>
+            <div
+                style="
+                    background-color: white;
+                    width: 80%;
+                    margin: 0 auto;
+                    height: 80px;
+                    margin: 0 auto;
+                    margin-top: 60px;
+                    border-radius: 100px;
+                    padding: 0px 25px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                "
+            >
+                <input
+                    style="
+                        border: 0;
+                        font-size: 18px;
+                        line-height: 140%;
+                        letter-spacing: -2%;
+                        font-family: Poppins, sans-serif;
+                    "
+                    type="email"
+                    placeholder="Введите свой e-mail"
+                    id="email-input"
+                />
+                <button class="subscribe-button">Подписаться</button>
+
+                <script>
+                    document
+                        .querySelector(".subscribe-button")
+                        .addEventListener("click", function () {
+                            const email =
+                                document.getElementById("email-input").value;
+                            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (email && emailPattern.test(email)) {
+                                alert(
+                                    `Благодарим за подписку! Теперь вы будете получать рассылку на ${email} о новостях.`
+                                );
+                            } else {
+                                alert("Пожалуйста, введите корректный e-mail.");
+                            }
+                        });
+                </script>
+            </div>
+        </div>
+
+        <footer id="contact">
+            <div class="footer_logo">
+                <div class="logo" style="margin-bottom: 20px !important">
+                    <h1>Buter<span>Brod</span></h1>
+                </div>
+                <p>
+                    BeterBrod это пионер полезных продуктов и питательных
+                    веществ
+                </p>
+                <span style="color: #2b2b2b">ButerBrod ©2024</span>
+            </div>
+            <div class="footer_ul">
+                <ul>
+                    <li
+                        style="
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            color: #fb9300 !important;
+                        "
+                    >
+                        Характеристики
+                    </li>
+                    <li><a href="menu.html">Меню</a></li>
+                    <li><a href="menu.html">Промо</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                </ul>
+            </div>
+            <div class="footer_ul_2">
+                <ul>
+                    <li
+                        style="
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            color: #fb9300 !important;
+                        "
+                    >
+                        Свяжитесь с нами
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_01.png" alt="" />
+                        <p>Центральный офис Минск, УЛ. Ленина 19 стр. 7</p>
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_02.png" alt="" />
+                        <p>buter_brod@gmail.com</p>
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_03.png" alt="" />
+                        <p>Звонок по телефону 7573</p>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer_netword">
+                    <a href="https://x.com/kulinariy"
+                        ><img src="image/twitter.png" alt=""
+                    /></a>
+                    <a href="https://www.facebook.com/shef.tj"
+                        ><img src="image/Facebook.png" alt=""
+                    /></a>
+                    <a
+                        href="https://www.instagram.com/zakonbuterbroda?igsh=MWM5bmJwbWRvZWF1Mw=="
+                        ><img src="image/instagram.png" alt=""
+                    /></a>
+                </div>
+                <p
+                    style="
+                        font-weight: 400;
+                        color: #575757;
+                        margin-top: 20px !important;
+                    "
+                >
+                    Можете найти нас
+                </p>
+            </div>
+        </footer>
+    </body>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const reviewCounter = document.getElementById("review_counter");
+            const reviewBlock = document.querySelector(".review_block");
+            const avatars = [
+                "image/card_1.png",
+                "image/card_2.png",
+                "image/card_3.png",
+                "image/card_4.png",
+                "image/card_5.png",
+            ];
+
+            const usernames = [
+                "Александра",
+                "Иван",
+                "Мария",
+                "Андрей",
+                "Елена",
+            ];
+
+            const reviews = [
+                "Продукция свежая!!! Про соус вообще молчу, он очень вкусный. Всем рекомендую этот сервис, ребята! Потому что они действительно заботятся о качестве изделий.",
+                "Бутеры огонь, брал себе и коллегам, нам очень понравилось! Особенно круто, что можно на сайте все заказать. Отдельной похвалы заслуживает конструктор)",
+                "Очень удобно, точка находится рядом с офисом так еще и достава есть, ребята хорошо постарались, буду и дальше заказывать у них.",
+                "Очень разнообразные вариации бутербродов, а главное, всё свежее! Девушки на кассе очень милые и приветливые, атмосфера очень приятная.",
+                "Отличный выбор для быстрого перекуса! Я постоянно захожу в этот магазин за своим любимым бутербродом. Большое разнообразие начинок. Очень рекомендую!",
+            ];
+
+            let currentReviewIndex = 0;
+
+            function updateReview() {
+                const formattedIndex = (currentReviewIndex + 1)
+                    .toString()
+                    .padStart(2, "0");
+                reviewCounter.textContent = `${formattedIndex}`;
+                reviewBlock.querySelector(".review-text").textContent =
+                    reviews[currentReviewIndex];
+                reviewBlock.querySelector(".avatar img").src =
+                    avatars[currentReviewIndex];
+                reviewBlock.querySelector(".username").textContent =
+                    usernames[currentReviewIndex];
+            }
+
+            document
+                .querySelector(".buttons .left")
+                .addEventListener("click", function () {
+                    currentReviewIndex =
+                        (currentReviewIndex - 1 + reviews.length) %
+                        reviews.length;
+                    updateReview();
+                });
+
+            document
+                .querySelector(".buttons .right")
+                .addEventListener("click", function () {
+                    currentReviewIndex =
+                        (currentReviewIndex + 1) % reviews.length;
+                    updateReview();
+                });
+
+            updateReview();
+        });
+    </script>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		/>
+		<link rel="stylesheet" href="header.css" />
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Buter<span>Brod</span></h1>
+			<div class="navbar">
+				<div class="menu-toggle" onclick="toggleMenu()">
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+				</div>
+				<ul class="menu">
+					<li>
+						<a style="color: #fb9300; font-weight: bold" href="index.html"
+							>Главная</a
+						>
+					</li>
+					<li><a href="Cinema.html">Меню</a></li>
+					<li><a href="news.html">Контакты</a></li>
+					<li><a href="#">О нас</a></li>
+					<li>
+						<div class="button_mobile">
+							<div
+								id="mobileCartContainer"
+								style="display: flex; align-items: center"
+							>
+								<img
+									src="image/Combined-Shape.png"
+									alt="Cart Image"
+									style="display: inline-block; vertical-align: middle"
+								/>
+								<a
+									href="Cast.html"
+									style="
+										display: inline-block;
+										vertical-align: middle;
+										margin-left: 5px;
+										color: #575757;
+										font-size: 18px;
+										font-family: 'Poppins', sans-serif;
+										font-weight: 500;
+									"
+									>Покупки</a
+								>
+							</div>
+							<div style="color: black" id="mobileUsernameContainer"></div>
+							<button id="mobileAccountButton" class="btn btn-primary account">
+								Войти
+							</button>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+			<div class="modal_account">
+				<div
+					style="
+						display: flex;
+						gap: 10px;
+						align-items: center;
+						color: white;
+						font-size: 20px;
+					"
+				>
+					<div class="button_pc">
+						<div id="cartContainer" style="display: flex; align-items: center">
+							<img
+								src="image/Combined-Shape.png"
+								alt="Cart Image"
+								style="display: inline-block; vertical-align: middle"
+							/>
+							<a
+								href="Cast.html"
+								style="
+									display: inline-block;
+									vertical-align: middle;
+									margin-left: 5px;
+									color: #575757;
+									font-size: 18px;
+									font-family: 'Poppins', sans-serif;
+									font-weight: 500;
+								"
+								>Покупки</a
+							>
+						</div>
+						<div style="color: black" id="usernameContainer"></div>
+						<button id="accountButton" class="btn btn-primary account">
+							Войти
+						</button>
+					</div>
+
+					<script>
+						$(document).ready(function () {
+							// Загрузка данных пользователя из сессии
+							$.ajax({
+								type: 'GET',
+								url: 'php/check_session.php',
+								dataType: 'json',
+								encode: true,
+							}).done(function (data) {
+								if (data.authenticated) {
+									var usernameContainer = $('#usernameContainer')
+									if (usernameContainer.text().trim() === '') {
+										// Получаем первую букву имени и устанавливаем ее в качестве текста
+										var firstName = data.name.trim().charAt(0).toUpperCase()
+										usernameContainer.text(firstName)
+										// Устанавливаем стили для контейнера с буквой
+										usernameContainer.css({
+											'background-color': '#FB9333',
+											'border-radius': '50%',
+											width: '60px', // Задаем фиксированную ширину и высоту для создания круглого контейнера
+											height: '60px',
+											display: 'flex',
+											'justify-content': 'center',
+											'align-items': 'center',
+											'font-family': 'Poppins, sans-serif',
+											'font-weight': '500',
+											'font-style': 'normal',
+											'font-size': '32px',
+											color: 'white',
+										})
+										// Создаем ссылку на страницу аккаунта и оборачиваем ею содержимое usernameContainer
+										var accountLink = $('<a style="text-decoration:none;">')
+											.attr('href', 'account.html')
+											.append(usernameContainer.contents())
+										usernameContainer.empty().append(accountLink)
+									}
+									$('#accountButton').hide() // Скрываем кнопку "Аккаунт"
+									$('#cartContainer').show() // Показываем блок корзины
+								} else {
+									$('#cartContainer').hide() // Скрываем блок корзины, если нет сессии
+									$('#accountButton').show() // Показываем кнопку "Аккаунт"
+								}
+							})
+						})
+					</script>
+
+					<script>
+						$(document).ready(function () {
+							// Загрузка данных пользователя из сессии
+							$.ajax({
+								type: 'GET',
+								url: 'php/check_session.php',
+								dataType: 'json',
+								encode: true,
+							}).done(function (data) {
+								if (data.authenticated) {
+									var usernameContainer = $('#mobileUsernameContainer')
+									if (usernameContainer.text().trim() === '') {
+										// Получаем первую букву имени и устанавливаем ее в качестве текста
+										var firstName = data.name.trim().charAt(0).toUpperCase()
+										usernameContainer.text(firstName)
+										// Устанавливаем стили для контейнера с буквой
+										usernameContainer.css({
+											'background-color': '#FB9333',
+											'border-radius': '50%',
+											width: '60px', // Задаем фиксированную ширину и высоту для создания круглого контейнера
+											height: '60px',
+											display: 'flex',
+											'justify-content': 'center',
+											'align-items': 'center',
+											'font-family': 'Poppins, sans-serif',
+											'font-weight': '500',
+											'font-style': 'normal',
+											'font-size': '32px',
+											color: 'white',
+										})
+									}
+									$('#mobileAccountButton').hide() // Скрываем кнопку "Аккаунт"
+									$('#mobileCartContainer').show() // Показываем блок корзины
+								} else {
+									$('#mobileCartContainer').hide() // Скрываем блок корзины, если нет сессии
+									$('#mobileAccountButton').show() // Показываем кнопку "Аккаунт"
+								}
+							})
+						})
+					</script>
+				</div>
+
+				<div id="modal" class="modal">
+					<div class="modal-content">
+						<span class="close">&times;</span>
+						<h2 style="color: #fb9300">Регистрация</h2>
+						<form id="registrationForm" method="post">
+							<div class="form-group">
+								<input
+									type="text"
+									class="form-control"
+									id="name"
+									name="name"
+									minlength="5"
+									placeholder="Введите имя"
+								/>
+							</div>
+							<div class="form-group">
+								<input
+									type="email"
+									class="form-control"
+									id="email"
+									name="email"
+									placeholder="Введите почту"
+								/>
+							</div>
+							<div class="form-group">
+								<input
+									type="tel"
+									class="form-control"
+									id="phone"
+									name="phone"
+									placeholder="Введите телефон"
+								/>
+							</div>
+							<button type="submit" class="btn btn-primary">
+								Зарегистрироваться
+							</button>
+							<div id="registrationResult"></div>
+						</form>
+
+						<p>
+							У вас уже есть аккаунт?<a
+								href="#"
+								style="color: rgb(46, 84, 255)"
+								id="loginLink"
+								>Авторизуйтесь</a
+							>
+						</p>
+					</div>
+				</div>
+
+				<div id="loginForm" class="modal" style="display: none">
+					<div class="modal-content">
+						<span class="close">&times;</span>
+						<h2 style="color: #fb9300">Авторизация</h2>
+						<form id="authForm" method="post">
+							<div class="form-group">
+								<input
+									type="tel"
+									class="form-control"
+									id="loginPhone"
+									name="phone"
+									minlength="10"
+									placeholder="Введите номер телефона"
+								/>
+							</div>
+
+							<button type="submit" class="btn btn-primary">Войти</button>
+							<div id="loginResult"></div>
+						</form>
+
+						<p>
+							Нет аккаунта?<a
+								href="#"
+								style="color: rgb(46, 84, 255)"
+								id="registerLink"
+								>Зарегистрируйтесь</a
+							>
+						</p>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				var registrationForm = document.getElementById('registrationForm')
+				var nameInput = document.getElementById('name')
+				var emailInput = document.getElementById('email')
+				var phoneInput = document.getElementById('phone')
+				var submitButton = document.querySelector(
+					"#registrationForm button[type='submit']"
+				)
+
+				// Функция для проверки заполненности всех полей формы регистрации
+				function checkRegistrationForm() {
+					if (
+						nameInput.value.trim() !== '' &&
+						emailInput.value.trim() !== '' &&
+						phoneInput.value.trim() !== ''
+					) {
+						submitButton.removeAttribute('disabled')
+					} else {
+						submitButton.setAttribute('disabled', 'disabled')
+					}
+				}
+
+				// Вызываем функцию проверки при изменении содержимого полей
+				nameInput.addEventListener('input', checkRegistrationForm)
+				emailInput.addEventListener('input', checkRegistrationForm)
+				phoneInput.addEventListener('input', checkRegistrationForm)
+
+				// Проверяем форму при загрузке страницы
+				checkRegistrationForm()
+
+				var authForm = document.getElementById('authForm')
+				var loginPhoneInput = document.getElementById('loginPhone')
+				var loginButton = document.querySelector(
+					"#authForm button[type='submit']"
+				)
+
+				// Функция для проверки заполненности всех полей формы авторизации
+				function checkAuthForm() {
+					if (loginPhoneInput.value.trim() !== '') {
+						loginButton.removeAttribute('disabled')
+					} else {
+						loginButton.setAttribute('disabled', 'disabled')
+					}
+				}
+
+				// Вызываем функцию проверки при изменении содержимого поля
+				loginPhoneInput.addEventListener('input', checkAuthForm)
+
+				// Проверяем форму при загрузке страницы
+				checkAuthForm()
+			})
+		</script>
+
+		<script>
+			function toggleMenu() {
+				var menu = document.querySelector('.menu')
+				menu.style.display = menu.style.display === 'none' ? 'flex' : 'none'
+			}
+		</script>
+
+		<script src="php/script.js"></script>
+
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="script/modal_window.js"></script>
+		<script src="script/register.js"></script>
+		<script src="script/login.js"></script>
+	</body>
+</html>

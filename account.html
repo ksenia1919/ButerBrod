@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.css"
+            rel="stylesheet"
+        />
+
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <link rel="stylesheet" href="header.css" />
+        <link rel="stylesheet" href="account.css" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Buter<span>Brod</span></h1>
+            <div class="navbar">
+                <div class="menu-toggle" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu">
+                    <li>
+                        <a href="index.html">Главная</a>
+                    </li>
+                    <li><a href="menu.html">Меню</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                    <li>
+                        <div class="button_mobile">
+                            <div
+                                id="mobileCartContainer"
+                                style="display: flex; align-items: center"
+                            >
+                                <img
+                                    src="image/Combined-Shape.png"
+                                    alt="Cart Image"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                    "
+                                />
+                                <a
+                                    href="Cast.html"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                        margin-left: 5px;
+                                        color: #575757;
+                                        font-size: 18px;
+                                        font-family: 'Poppins', sans-serif;
+                                        font-weight: 500;
+                                    "
+                                    >Покупки</a
+                                >
+                            </div>
+                            <div
+                                style="color: black"
+                                id="mobileUsernameContainer"
+                            ></div>
+                            <button
+                                id="mobileAccountButton"
+                                class="btn btn-primary account"
+                            >
+                                Войти
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="modal_account">
+                <div
+                    style="
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        color: white;
+                        font-size: 20px;
+                    "
+                >
+                    <div class="button_pc">
+                        <div
+                            id="cartContainer"
+                            style="display: flex; align-items: center"
+                        >
+                            <img
+                                src="image/Combined-Shape.png"
+                                alt="Cart Image"
+                                style="
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                "
+                            />
+                            <a
+                                href="Cast.html"
+                                style="
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                    margin-left: 5px;
+                                    color: #575757;
+                                    font-size: 18px;
+                                    font-family: 'Poppins', sans-serif;
+                                    font-weight: 500;
+                                "
+                                >Покупки</a
+                            >
+                        </div>
+                        <div style="color: black" id="usernameContainer"></div>
+                        <button
+                            id="accountButton"
+                            class="btn btn-primary account"
+                        >
+                            Войти
+                        </button>
+                    </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            // Загрузка данных пользователя из сессии
+                            $.ajax({
+                                type: "GET",
+                                url: "php/check_session.php",
+                                dataType: "json",
+                                encode: true,
+                            }).done(function (data) {
+                                if (data.authenticated) {
+                                    var usernameContainer =
+                                        $("#usernameContainer");
+                                    if (
+                                        usernameContainer.text().trim() === ""
+                                    ) {
+                                        // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                        var firstName = data.name
+                                            .trim()
+                                            .charAt(0)
+                                            .toUpperCase();
+                                        usernameContainer.text(firstName);
+                                        // Устанавливаем стили для контейнера с буквой
+                                        usernameContainer.css({
+                                            "background-color": "#FB9333",
+                                            "border-radius": "50%",
+                                            width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                            height: "60px",
+                                            display: "flex",
+                                            "justify-content": "center",
+                                            "align-items": "center",
+                                            "font-family":
+                                                "Poppins, sans-serif",
+                                            "font-weight": "500",
+                                            "font-style": "normal",
+                                            "font-size": "32px",
+                                            color: "white",
+                                        });
+                                        // Создаем ссылку на страницу аккаунта и оборачиваем ею содержимое usernameContainer
+                                        var accountLink = $(
+                                            '<a style="text-decoration:none;">'
+                                        )
+                                            .attr("href", "account.html")
+                                            .append(
+                                                usernameContainer.contents()
+                                            );
+                                        usernameContainer
+                                            .empty()
+                                            .append(accountLink);
+                                    }
+                                    $("#accountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                    $("#cartContainer").show(); // Показываем блок корзины
+                                } else {
+                                    $("#cartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                    $("#accountButton").show(); // Показываем кнопку "Аккаунт"
+                                }
+                            });
+                        });
+                    </script>
+
+<script>
+    $(document).ready(function () {
+        // Загрузка данных пользователя из сессии
+        $.ajax({
+            type: "GET",
+            url: "php/check_session.php",
+            dataType: "json",
+            encode: true,
+        }).done(function (data) {
+            if (data.authenticated) {
+                var usernameContainer = $("#mobileUsernameContainer");
+                if (usernameContainer.text().trim() === "") {
+                    // Получаем первую букву имени и устанавливаем ее в качестве текста
+                    var firstName = data.name.trim().charAt(0).toUpperCase();
+                    usernameContainer.text(firstName);
+                    // Устанавливаем стили для контейнера с буквой
+                    usernameContainer.css({
+                        "background-color": "#FB9333",
+                        "border-radius": "50%",
+                        width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                        height: "60px",
+                        display: "flex",
+                        "justify-content": "center",
+                        "align-items": "center",
+                        "font-family": "Poppins, sans-serif",
+                        "font-weight": "500",
+                        "font-style": "normal",
+                        "font-size": "32px",
+                        color: "white",
+                        cursor: "pointer", // Добавляем стиль курсора
+                        margin: "0 auto",
+                    });
+                }
+                $("#mobileAccountButton").hide(); // Скрываем кнопку "Аккаунт"
+                $("#mobileCartContainer").show(); // Показываем блок корзины
+
+                // Добавляем обработчик события click для перенаправления на account.html
+                usernameContainer.click(function () {
+                    window.location.href = "account.html";
+                });
+            } else {
+                $("#mobileCartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                $("#mobileAccountButton").show(); // Показываем кнопку "Аккаунт"
+            }
+        });
+    });
+</script>
+
+
+                <div id="modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2 style="color: #fb9300">Регистрация</h2>
+                        <form id="registrationForm" method="post">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="name"
+                                    name="name"
+                                    minlength="5"
+                                    placeholder="Введите имя"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Введите почту"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <input
+                                    type="tel"
+                                    class="form-control"
+                                    id="phone"
+                                    name="phone"
+                                    minlength="10"
+                                    placeholder="Введите телефон"
+                                />
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                Зарегистрироваться
+                            </button>
+                            <div id="registrationResult"></div>
+                        </form>
+
+                        <p>
+                            У вас уже есть аккаунт?<a
+                                href="#"
+                                style="color: rgb(46, 84, 255)"
+                                id="loginLink"
+                                >Авторизуйтесь</a
+                            >
+                        </p>
+                    </div>
+                </div>
+
+                <div id="loginForm" class="modal" style="display: none">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2 style="color: #fb9300">Авторизация</h2>
+                        <form id="authForm" method="post">
+                            <div class="form-group">
+                                <input
+                                    type="tel"
+                                    class="form-control"
+                                    id="loginPhone"
+                                    name="phone"
+                                    minlength="10"
+                                    placeholder="Введите номер телефона"
+                                />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Войти
+                            </button>
+                            <div id="loginResult"></div>
+                        </form>
+
+                        <p>
+                            Нет аккаунта?<a
+                                href="#"
+                                style="color: rgb(46, 84, 255)"
+                                id="registerLink"
+                                >Зарегистрируйтесь</a
+                            >
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var registrationForm =
+                    document.getElementById("registrationForm");
+                var nameInput = document.getElementById("name");
+                var emailInput = document.getElementById("email");
+                var phoneInput = document.getElementById("phone");
+                var submitButton = document.querySelector(
+                    "#registrationForm button[type='submit']"
+                );
+
+                // Функция для проверки заполненности всех полей формы регистрации
+                function checkRegistrationForm() {
+                    if (
+                        nameInput.value.trim() !== "" &&
+                        emailInput.value.trim() !== "" &&
+                        phoneInput.value.trim() !== ""
+                    ) {
+                        submitButton.removeAttribute("disabled");
+                    } else {
+                        submitButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Вызываем функцию проверки при изменении содержимого полей
+                nameInput.addEventListener("input", checkRegistrationForm);
+                emailInput.addEventListener("input", checkRegistrationForm);
+                phoneInput.addEventListener("input", checkRegistrationForm);
+
+                // Проверяем форму при загрузке страницы
+                checkRegistrationForm();
+
+                var authForm = document.getElementById("authForm");
+                var loginPhoneInput = document.getElementById("loginPhone");
+                var loginButton = document.querySelector(
+                    "#authForm button[type='submit']"
+                );
+
+                // Функция для проверки заполненности всех полей формы авторизации
+                function checkAuthForm() {
+                    if (loginPhoneInput.value.trim() !== "") {
+                        loginButton.removeAttribute("disabled");
+                    } else {
+                        loginButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Вызываем функцию проверки при изменении содержимого поля
+                loginPhoneInput.addEventListener("input", checkAuthForm);
+
+                // Проверяем форму при загрузке страницы
+                checkAuthForm();
+            });
+        </script>
+
+        <script>
+            function toggleMenu() {
+                var menu = document.querySelector(".menu");
+                menu.style.display =
+                    menu.style.display === "none" ? "flex" : "none";
+            }
+        </script>
+
+        <div
+            class="container form-container"
+            style="
+                background-color: #faf5ed;
+                padding: 40px;
+                border-radius: 40px;
+                margin-top: 25px;
+                max-width: 800px;
+            "
+        >
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a
+                        class="nav-link active"
+                        id="personal-data-tab"
+                        data-toggle="tab"
+                        href="#personal-data"
+                        role="tab"
+                        aria-controls="personal-data"
+                        aria-selected="true"
+                        >Личные данные</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        id="my-orders-tab"
+                        data-toggle="tab"
+                        href="#my-orders"
+                        role="tab"
+                        aria-controls="my-orders"
+                        aria-selected="false"
+                        >Мои заказы</a
+                    >
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                <div
+                    class="tab-pane fade show active"
+                    id="personal-data"
+                    role="tabpanel"
+                    aria-labelledby="personal-data-tab"
+                >
+                    <form
+                        id="personal-data-form"
+                        method="POST"
+                        action="update_user.php"
+                        onsubmit="return validateForm()"
+                    >
+                        <div class="form-group" style="margin-top: 15px">
+                            <label for="user-name">Имя</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="user-name"
+                                name="name"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="user-phone">Телефон</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="user-phone"
+                                name="phone"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="user-email">Электронная почта</label>
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="user-email"
+                                name="email"
+                            />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Обновить данные
+                        </button>
+                    </form>
+                </div>
+                <div
+                    class="tab-pane fade"
+                    id="my-orders"
+                    role="tabpanel"
+                    aria-labelledby="my-orders-tab"
+                >
+                    <!-- Раздел заказов -->
+                    <div id="orders-container"></div>
+
+                    <!-- Модальное окно для вывода подробной информации о заказе -->
+                    <div
+                        class="modal fade"
+                        id="orderDetailsModal"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="orderDetailsModalLabel"
+                        aria-hidden="true"
+                    >
+                        <div
+                            class="modal-dialog modal-dialog-centered"
+                            role="document"
+                        >
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5
+                                        class="modal-title"
+                                        id="orderDetailsModalLabel"
+                                    >
+                                        Подробности заказа
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close"
+                                    >
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div
+                                    class="modal-body"
+                                    id="orderDetailsBody"
+                                ></div>
+                                <div class="modal-footer">
+                                    <p id="ks-symma"></p>
+                                    <!-- Элемент для общей суммы -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form
+                style="margin-top: 20px"
+                id="logout-form"
+                method="POST"
+                action="logout.php"
+                class="logout-btn"
+            >
+                <button type="submit" class="btn btn-danger">Выйти</button>
+                <div id="adminPanelLink"></div>
+
+                <script>
+                    // Создаем AJAX-запрос к вашему PHP-файлу
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("GET", "check_admin.php", true);
+
+                    // Обработчик события при получении ответа от сервера
+                    xhr.onload = function () {
+                        if (xhr.status >= 200 && xhr.status < 400) {
+                            // Получаем данные из ответа в формате JSON
+                            var response = JSON.parse(xhr.responseText);
+
+                            // Проверяем, является ли пользователь администратором
+                            if (response.isAdmin) {
+                                // Если пользователь администратор, создаем ссылку на админ панель
+                                var adminPanelLink =
+                                    document.getElementById("adminPanelLink");
+                                adminPanelLink.innerHTML =
+                                    '<a href="admin.php">Перейти в админ панель</a>';
+
+                                // Автоматически нажимаем на ссылку
+                                adminPanelLink.querySelector("a").click();
+                            }
+                        }
+                    };
+
+                    // Отправляем запрос
+                    xhr.send();
+                </script>
+            </form>
+            <style>
+                .btn:focus,
+                .btn:focus-visible,
+                button:focus,
+                button:focus-visible {
+                    outline: none !important;
+                    box-shadow: none !important;
+                }
+
+                /* Убираем обводку при активном состоянии (нажатии мышью) */
+                .btn:active,
+                button:active {
+                    outline: none !important;
+                    box-shadow: none !important;
+                }
+
+                .modal-content {
+                    max-height: 50vh; /* Ограничиваем высоту модального окна */
+                    overflow: hidden; /* Прячем переполнение */
+                }
+
+                .modal-body {
+                    max-height: 30vh; /* Ограничиваем высоту тела модального окна */
+                    overflow-y: auto; /* Добавляем вертикальную прокрутку, если содержимое не вмещается */
+                }
+            </style>
+        </div>
+        <script>
+            // Функция для загрузки данных пользователя и заполнения формы
+            function loadUserData() {
+                fetch("get_user_data.php")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(
+                                "Network response was not ok " +
+                                    response.statusText
+                            );
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        document.getElementById("user-name").value = data.name;
+                        document.getElementById("user-phone").value =
+                            data.phone;
+                        document.getElementById("user-email").value =
+                            data.email;
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "There has been a problem with your fetch operation:",
+                            error
+                        );
+                    });
+            }
+
+            // Валидация формы
+            function validateForm() {
+                const name = document.getElementById("user-name").value;
+                const phone = document.getElementById("user-phone").value;
+                const email = document.getElementById("user-email").value;
+
+                // Проверка имени (минимум 2 символа)
+                if (name.length < 2) {
+                    alert("Имя должно содержать минимум 2 символа.");
+                    return false;
+                }
+
+                // Проверка телефона (Беларусь)
+                const phonePattern =
+                    /^(\+375|80)\s?\(?\d{2}\)?\s?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+                if (!phonePattern.test(phone)) {
+                    alert("Введите корректный номер телефона для Беларуси.");
+                    return false;
+                }
+
+                // Проверка электронной почты
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    alert("Введите корректный адрес электронной почты.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Вызываем функции при загрузке страницы
+            window.onload = function () {
+                loadUserData();
+                loadUserOrders();
+            };
+
+            // Функция для загрузки заказов пользователя и отображения в виде карточек
+            function loadUserOrders() {
+                fetch("get_orders.php")
+                    .then((response) => response.json())
+                    .then((orders) => {
+                        const ordersContainer =
+                            document.getElementById("orders-container");
+                        ordersContainer.innerHTML = "";
+                        orders.forEach((order) => {
+                            const orderCard = document.createElement("div");
+                            orderCard.className = "card order-card";
+
+                            const cardBody = document.createElement("div");
+                            cardBody.className = "card-body";
+
+                            const cardTitle = document.createElement("h5");
+                            cardTitle.className = "card-title";
+                            cardTitle.textContent = `Заказ №${order.номер_заказа}`;
+
+                            const cardText = document.createElement("p");
+                            cardText.className = "card-text";
+                            cardText.innerHTML = `
+                    Дата заказа: ${order.дата_заказа} <br>
+                    Состояние: ${order.состояние} 
+${
+    order.состояние === "Идет готовка"
+        ? '<span><i class="bi bi-check-circle-fill text-danger"></i></span>'
+        : ""
+}
+${
+    order.состояние === "Уже в пути"
+        ? '<span ><i class="bi bi-check-circle-fill text-orange"></i></span>'
+        : ""
+}
+${
+    order.состояние === "Готово"
+        ? '<span><i class="bi bi-check-circle-fill text-success"></i></span>'
+        : ""
+}
+
+                    <br>
+                    Адрес доставки: ${order.адрес_доставки} <br>
+                    Способ оплаты: ${order.способ_оплаты}
+                `;
+
+                            const moreInfoButton =
+                                document.createElement("button");
+                            moreInfoButton.className =
+                                "btn btn-primary button-pod";
+                            moreInfoButton.textContent = "Подробнее";
+                            moreInfoButton.addEventListener("click", () => {
+                                showOrderDetails(order);
+                            });
+
+                            cardBody.appendChild(cardTitle);
+                            cardBody.appendChild(cardText);
+                            cardBody.appendChild(moreInfoButton);
+                            orderCard.appendChild(cardBody);
+                            ordersContainer.appendChild(orderCard);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching orders:", error);
+                    });
+            }
+
+            function showOrderDetails(order) {
+                const modalTitle = document.getElementById(
+                    "orderDetailsModalLabel"
+                );
+                modalTitle.textContent = `Подробности заказа №${order.номер_заказа}`;
+
+                const modalBody = document.getElementById("orderDetailsBody");
+                modalBody.innerHTML = "";
+
+                let totalSum = 0;
+
+                order.contents.forEach((content) => {
+                    const productInfo = document.createElement("p");
+                    productInfo.innerHTML = `
+			<strong>Название:</strong> ${content.название_продукта} <br>
+			${
+                content.описание_продукта
+                    ? `<strong>Описание:</strong> ${content.описание_продукта} <br>`
+                    : ""
+            }
+			<strong>Цена за штуку:</strong> ${content.цена_за_штуку} <br>
+			<strong>Количество:</strong> ${content.количество} <br>
+			<strong>Стоимость:</strong> ${content.стоимость}
+		`;
+                    modalBody.appendChild(productInfo);
+                    totalSum += content.стоимость;
+                });
+
+                const totalSumElement = document.getElementById("ks-symma");
+                totalSumElement.innerHTML = `<strong>Общая сумма:</strong> ${totalSum}`;
+
+                $("#orderDetailsModal").modal("show");
+            }
+        </script>
+
+        <script src="php/script.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="script/modal_window.js"></script>
+        <script src="script/register.js"></script>
+        <script src="script/login.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet"
+        />
+        <script
+            src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=f85c9cab-c808-4db3-a196-28b227a68dd8&suggest_apikey=f19ca746-31c0-4da5-be1c-9f3221268bcc"
+            type="text/javascript"
+        ></script>
+        <style></style>
+        <link rel="stylesheet" href="Cast.css" />
+        <link rel="stylesheet" href="header.css" />
+    </head>
+    <style>
+        .btn:focus,
+        .btn:focus-visible,
+        button:focus,
+        button:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Убираем обводку при активном состоянии (нажатии мышью) */
+        .btn:active,
+        button:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+    <body>
+        <div style="background-color: #fff5e6">
+            <header>
+                <h1>Buter<span>Brod</span></h1>
+                <div class="navbar">
+                    <div class="menu-toggle" onclick="toggleMenu()">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <ul class="menu">
+                        <li>
+                            <a href="index.html">Главная</a>
+                        </li>
+                        <li><a href="menu.html">Меню</a></li>
+                        <li><a href="news.html">Контакты</a></li>
+                        <li><a href="about.html">О нас</a></li>
+                        <li>
+                            <div class="button_mobile">
+                                <div
+                                    id="mobileCartContainer"
+                                    style="display: flex; align-items: center"
+                                >
+                                    <img
+                                        src="image/Combined-Shape.png"
+                                        alt="Cart Image"
+                                        style="
+                                            display: inline-block;
+                                            vertical-align: middle;
+                                        "
+                                    />
+                                    <a
+                                        href="Cast.html"
+                                        style="
+                                            display: inline-block;
+                                            vertical-align: middle;
+                                            margin-left: 5px;
+                                            color: #575757;
+                                            font-size: 18px;
+                                            font-family: 'Poppins', sans-serif;
+                                            font-weight: 500;
+                                        "
+                                        >Покупки</a
+                                    >
+                                </div>
+                                <div
+                                    style="color: black"
+                                    id="mobileUsernameContainer"
+                                ></div>
+                                <button
+                                    id="mobileAccountButton"
+                                    class="btn btn-primary account"
+                                >
+                                    Войти
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal_account">
+                    <div
+                        style="
+                            display: flex;
+                            gap: 10px;
+                            align-items: center;
+                            color: white;
+                            font-size: 20px;
+                        "
+                    >
+                        <div class="button_pc">
+                            <div
+                                id="cartContainer"
+                                style="display: flex; align-items: center"
+                            >
+                                <img
+                                    src="image/Combined-Shape.png"
+                                    alt="Cart Image"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                    "
+                                />
+                                <a
+                                    href="Cast.html"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                        margin-left: 5px;
+                                        color: #575757;
+                                        font-size: 18px;
+                                        font-family: 'Poppins', sans-serif;
+                                        font-weight: 500;
+                                    "
+                                    style="color: #fb9300; font-weight: bold"
+                                    >Покупки</a
+                                >
+                            </div>
+                            <div
+                                style="color: black"
+                                id="usernameContainer"
+                            ></div>
+                            <button
+                                id="accountButton"
+                                class="btn btn-primary account"
+                            >
+                                Войти
+                            </button>
+                        </div>
+
+                        <script>
+                            $(document).ready(function () {
+                                // Загрузка данных пользователя из сессии
+                                $.ajax({
+                                    type: "GET",
+                                    url: "php/check_session.php",
+                                    dataType: "json",
+                                    encode: true,
+                                }).done(function (data) {
+                                    if (data.authenticated) {
+                                        var usernameContainer =
+                                            $("#usernameContainer");
+                                        if (
+                                            usernameContainer.text().trim() ===
+                                            ""
+                                        ) {
+                                            // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                            var firstName = data.name
+                                                .trim()
+                                                .charAt(0)
+                                                .toUpperCase();
+                                            usernameContainer.text(firstName);
+                                            // Устанавливаем стили для контейнера с буквой
+                                            usernameContainer.css({
+                                                "background-color": "#FB9333",
+                                                "border-radius": "50%",
+                                                width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                                height: "60px",
+                                                display: "flex",
+                                                "justify-content": "center",
+                                                "align-items": "center",
+                                                "font-family":
+                                                    "Poppins, sans-serif",
+                                                "font-weight": "500",
+                                                "font-style": "normal",
+                                                "font-size": "32px",
+                                                color: "white",
+                                            });
+                                            // Создаем ссылку на страницу аккаунта и оборачиваем ею содержимое usernameContainer
+                                            var accountLink = $(
+                                                '<a style="text-decoration:none;">'
+                                            )
+                                                .attr("href", "account.html")
+                                                .append(
+                                                    usernameContainer.contents()
+                                                );
+                                            usernameContainer
+                                                .empty()
+                                                .append(accountLink);
+                                        }
+                                        $("#accountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                        $("#cartContainer").show(); // Показываем блок корзины
+                                    } else {
+                                        $("#cartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                        $("#accountButton").show(); // Показываем кнопку "Аккаунт"
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <script>
+                            $(document).ready(function () {
+                                // Загрузка данных пользователя из сессии
+                                $.ajax({
+                                    type: "GET",
+                                    url: "php/check_session.php",
+                                    dataType: "json",
+                                    encode: true,
+                                }).done(function (data) {
+                                    if (data.authenticated) {
+                                        var usernameContainer = $(
+                                            "#mobileUsernameContainer"
+                                        );
+                                        if (
+                                            usernameContainer.text().trim() ===
+                                            ""
+                                        ) {
+                                            // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                            var firstName = data.name
+                                                .trim()
+                                                .charAt(0)
+                                                .toUpperCase();
+                                            usernameContainer.text(firstName);
+                                            // Устанавливаем стили для контейнера с буквой
+                                            usernameContainer.css({
+                                                "background-color": "#FB9333",
+                                                "border-radius": "50%",
+                                                width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                                height: "60px",
+                                                display: "flex",
+                                                "justify-content": "center",
+                                                "align-items": "center",
+                                                "font-family":
+                                                    "Poppins, sans-serif",
+                                                "font-weight": "500",
+                                                "font-style": "normal",
+                                                "font-size": "32px",
+                                                color: "white",
+                                                cursor: "pointer", // Добавляем стиль курсора
+                                                margin: "0 auto",
+                                            });
+                                        }
+                                        $("#mobileAccountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                        $("#mobileCartContainer").show(); // Показываем блок корзины
+
+                                        // Добавляем обработчик события click для перенаправления на account.html
+                                        usernameContainer.click(function () {
+                                            window.location.href =
+                                                "account.html";
+                                        });
+                                    } else {
+                                        $("#mobileCartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                        $("#mobileAccountButton").show(); // Показываем кнопку "Аккаунт"
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+
+                    <div id="modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2 style="color: #fb9300">Регистрация</h2>
+                            <form id="registrationForm" method="post">
+                                <div class="form-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="name"
+                                        name="name"
+                                        minlength="5"
+                                        placeholder="Введите имя"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                        name="email"
+                                        placeholder="Введите почту"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="phone"
+                                        name="phone"
+                                        minlength="10"
+                                        placeholder="Введите телефон"
+                                    />
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Зарегистрироваться
+                                </button>
+                                <div id="registrationResult"></div>
+                            </form>
+
+                            <p>
+                                У вас уже есть аккаунт?<a
+                                    href="#"
+                                    style="color: rgb(46, 84, 255)"
+                                    id="loginLink"
+                                    >Авторизуйтесь</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="loginForm" class="modal" style="display: none">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2 style="color: #fb9300">Авторизация</h2>
+                            <form id="authForm" method="post">
+                                <div class="form-group">
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="loginPhone"
+                                        name="phone"
+                                        minlength="10"
+                                        placeholder="Введите номер телефона"
+                                    />
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Войти
+                                </button>
+                                <div id="loginResult"></div>
+                            </form>
+
+                            <p>
+                                Нет аккаунта?<a
+                                    href="#"
+                                    style="color: rgb(46, 84, 255)"
+                                    id="registerLink"
+                                    >Зарегистрируйтесь</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="text_menu">
+                <h2>Главная <span>/ Покупки</span></h2>
+                <h1>Корзина</h1>
+            </div>
+        </div>
+        <div
+            class="cartContainer2"
+            style="
+                text-align: center; /* Выравнивание содержимого по центру */
+                margin: 0 auto; /* Центрирование таблицы по горизонтали */
+            "
+            id="cartContainer2"
+        ></div>
+        <div
+            style="
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                padding: 0 10vw;
+            "
+        ></div>
+        <div class="footer">
+            <div>
+                <div>
+                    <p
+                        style="
+                            font-size: 22px;
+                            font-family: 'Poppins', sans-serif;
+                            font-weight: 900;
+                            color: #343434;
+                            margin-bottom: 12px;
+                        "
+                    >
+                        Общая калорийность
+                    </p>
+                </div>
+
+                <div
+                    style="
+                        text-align: center;
+                        padding: 13px 26px;
+                        font-size: 16px;
+                        font-family: 'Poppins', sans-serif;
+                        font-weight: 600;
+                        background-color: #fff5e6;
+                        border-radius: 100px;
+                        max-width: 175px;
+                        color: #707070;
+                    "
+                    id="totalCalories"
+                ></div>
+            </div>
+            <div>
+                <div id="totalZakaz"></div>
+                <div>
+                    <div id="totalDiscount"></div>
+                    <button
+                        id="showFormBtn"
+                        style="
+                            padding: 10px 25px;
+                            color: white;
+                            border: none;
+                            border-radius: 100px;
+                            cursor: pointer;
+                            margin-top: 10px;
+                        "
+                        disabled
+                    >
+                        Оформить заказ
+                    </button>
+
+                    <div id="orderFormContainer">
+                        <form id="orderForm" method="post">
+                            <div id="addressForm" class="formBlock active">
+                                <div class="vibor">
+                                    <button
+                                        id="deliveryBtn"
+                                        class="deliveryBtn active"
+                                    >
+                                        Доставка
+                                    </button>
+                                    <button id="pickupBtn" class="pickupBtn">
+                                        Самовывоз
+                                    </button>
+                                </div>
+                                <br /><br />
+                                <div id="pickupLocation" style="display: none">
+                                    <br />
+                                    <select
+                                        id="pickupLocationSelect"
+                                        name="pickupLocation"
+                                        required
+                                    >
+                                        <option
+                                            value='ТЦ "Скала", ул. Петра Глебки, 5 Пн-Вс: 10:00 — 22:00'
+                                        >
+                                            ТЦ "Скала", ул. Петра Глебки, 5
+                                            Пн-Вс: 10:00 — 22:00
+                                        </option>
+                                        <option
+                                            value="Алми, ул. Притыцкого, 93 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Алми, ул. Притыцкого, 93 Пн-Вс:
+                                            11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Белградская, ул. Белградская, 4 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Белградская, ул. Белградская, 4
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value='Богдановича "Матрешка", ул. Максима Богдановича, 62 Пн-Вс: 11:00 — 23:00'
+                                        >
+                                            Богдановича "Матрешка", ул. Максима
+                                            Богдановича, 62 Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Волгоградская, ул. Волгоградская, 4А Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Волгоградская, ул. Волгоградская, 4А
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Гурского, ул. Гурского, 56 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Гурского, ул. Гурского, 56 Пн-Вс:
+                                            11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Денисовская, ул. Денисовская, 8 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Денисовская, ул. Денисовская, 8
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Лошица, ул. Иосифа Гошкевича, 3 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Лошица, ул. Иосифа Гошкевича, 3
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Малиновка Простор, пр-т Дзержинского, 126 Пн-Вс: 10:00 — 23:00"
+                                        >
+                                            Малиновка Простор, пр-т
+                                            Дзержинского, 126 Пн-Вс: 10:00 —
+                                            23:00
+                                        </option>
+                                        <option
+                                            value="Одинцова, ул. Одинцова, 65 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Одинцова, ул. Одинцова, 65 Пн-Вс:
+                                            11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Партизанский, пр-т Партизанский, 87 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Партизанский, пр-т Партизанский, 87
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Пушкинская, ул. Притыцкого, 28А Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Пушкинская, ул. Притыцкого, 28А
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Рига, ул. Сурганова, 50 к 1 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Рига, ул. Сурганова, 50 к 1 Пн-Вс:
+                                            11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value='ТРЦ "Грин Сити", ул. Притыцкого, 156 Пн-Вс: 10:00 — 22:00'
+                                        >
+                                            ТРЦ "Грин Сити", ул. Притыцкого, 156
+                                            Пн-Вс: 10:00 — 22:00
+                                        </option>
+                                        <option
+                                            value='ТЦ "Дана Молл", ул. Петра Мстиславца, 11 Пн-Вс: 10:00 — 22:00'
+                                        >
+                                            ТЦ "Дана Молл", ул. Петра
+                                            Мстиславца, 11 Пн-Вс: 10:00 — 22:00
+                                        </option>
+                                        <option
+                                            value="Универсам Брест, пр-т Любимова, 17 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Универсам Брест, пр-т Любимова, 17
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Уручье, пр-т Независимости, 179 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Уручье, пр-т Независимости, 179
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Шабаны, пр-т Партизанский, 182 Пн-Вс: 11:00 — 23:00"
+                                        >
+                                            Шабаны, пр-т Партизанский, 182
+                                            Пн-Вс: 11:00 — 23:00
+                                        </option>
+                                        <option
+                                            value="Экспобел, ул. пересечение ул. Мирошниченко и МКАД Пн: 11:00 — 22:00 Вт-Вс: 10:00 — 22:00"
+                                        >
+                                            Экспобел, ул. пересечение ул.
+                                            Мирошниченко и МКАД Пн: 11:00 —
+                                            22:00 Вт-Вс: 10:00 — 22:00
+                                        </option>
+                                    </select>
+                                    <br /><br />
+                                </div>
+                                <div id="teplok">
+                                    <input
+                                        class="input"
+                                        type="text"
+                                        id="suggest"
+                                        name="address"
+                                        placeholder="Введите ваш адрес..."
+                                        required
+                                    />
+                                    <br />
+                                    <button type="button" id="button">
+                                        Проверить
+                                    </button>
+                                    <p id="notice">Адрес не найден</p>
+                                    <div id="map"></div>
+                                </div>
+                                <button id="nextBtn" disabled>Далее</button>
+                            </div>
+                            <div id="paymentForm" class="formBlock">
+                                <label
+                                    style="font-size: 30px"
+                                    for="paymentMethod"
+                                    >Способ оплаты:</label
+                                ><br />
+                                <input
+                                    type="hidden"
+                                    id="paymentMethod"
+                                    name="paymentMethod"
+                                />
+                                <label style="margin-bottom: -50px !important">
+                                    <input
+                                        type="radio"
+                                        name="paymentMethodRadio"
+                                        value="Наличными"
+                                        id="cash"
+                                    />
+                                    Наличными </label
+                                ><br />
+                                <label style="margin-top: 10px !important">
+                                    <input
+                                        type="radio"
+                                        name="paymentMethodRadio"
+                                        value="Картой"
+                                        id="card"
+                                    />
+                                    Картой
+                                </label>
+                                <br /><br />
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 10px;
+                                    "
+                                >
+                                    <button id="prevBtn">Назад</button>
+                                    <div class="buttonContainer">
+                                        <button
+                                            type="submit"
+                                            id="submitOrderBtn"
+                                        >
+                                            Оформить заказ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="confirmationOverlay" id="confirmationOverlay">
+                        <div id="orderConfirmation">
+                            <h2>Ваш заказ оформлен</h2>
+                            <p>
+                                С подробностями вашего заказа можно <br />
+                                ознакомиться в своем профиле
+                            </p>
+                            <a href="account.html">Перейти в профиль</a>
+                        </div>
+                    </div>
+                    <div id="adminPanelLink"></div>
+
+                    <script>
+                        // Создаем AJAX-запрос к вашему PHP-файлу
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("GET", "check_admin.php", true);
+
+                        // Обработчик события при получении ответа от сервера
+                        xhr.onload = function () {
+                            if (xhr.status >= 200 && xhr.status < 400) {
+                                // Получаем данные из ответа в формате JSON
+                                var response = JSON.parse(xhr.responseText);
+
+                                // Проверяем, является ли пользователь администратором
+                                if (response.isAdmin) {
+                                    // Если пользователь администратор, создаем ссылку на админ панель
+                                    var adminPanelLink =
+                                        document.getElementById(
+                                            "adminPanelLink"
+                                        );
+                                    adminPanelLink.innerHTML =
+                                        '<a href="admin.php">Перейти в админ панель</a>';
+
+                                    // Автоматически нажимаем на ссылку
+                                    adminPanelLink.querySelector("a").click();
+                                }
+                            }
+                        };
+
+                        // Отправляем запрос
+                        xhr.send();
+                    </script>
+                    <script>
+                        document.addEventListener(
+                            "DOMContentLoaded",
+                            function () {
+                                var addressForm =
+                                    document.getElementById("addressForm");
+                                var paymentForm =
+                                    document.getElementById("paymentForm");
+                                var nextBtn =
+                                    document.getElementById("nextBtn");
+                                var prevBtn =
+                                    document.getElementById("prevBtn");
+                                var deliveryBtn =
+                                    document.getElementById("deliveryBtn");
+                                var pickupBtn =
+                                    document.getElementById("pickupBtn");
+                                var pickupLocation =
+                                    document.getElementById("pickupLocation");
+                                var suggestInput =
+                                    document.getElementById("suggest");
+                                var suggestButton =
+                                    document.getElementById("button");
+                                var notice = document.getElementById("notice");
+                                var map = document.getElementById("map");
+                                var pickupLocationSelect =
+                                    document.getElementById(
+                                        "pickupLocationSelect"
+                                    );
+
+                                function updateAddressId() {
+                                    if (
+                                        deliveryBtn.classList.contains("active")
+                                    ) {
+                                        suggestInput.id = "address";
+                                        pickupLocationSelect.id =
+                                            "pickupLocationSelect";
+                                    } else {
+                                        pickupLocationSelect.id = "address";
+                                        suggestInput.id = "suggest";
+                                    }
+                                    updateNextButtonState();
+                                }
+
+                                function updateNextButtonState() {
+                                    if (
+                                        deliveryBtn.classList.contains("active")
+                                    ) {
+                                        nextBtn.disabled =
+                                            suggestInput.value.trim() === "";
+                                    } else {
+                                        nextBtn.disabled = false;
+                                    }
+                                }
+
+                                deliveryBtn.addEventListener(
+                                    "click",
+                                    function (event) {
+                                        event.preventDefault();
+                                        deliveryBtn.classList.add("active");
+                                        pickupBtn.classList.remove("active");
+                                        suggestInput.style.display = "block";
+                                        suggestButton.style.display = "block";
+                                        notice.style.display = "block";
+                                        map.style.display = "block";
+                                        pickupLocation.style.display = "none";
+                                        suggestInput.setAttribute(
+                                            "required",
+                                            "required"
+                                        );
+                                        pickupLocation.removeAttribute(
+                                            "required"
+                                        );
+                                        addressForm.style.borderColor =
+                                            "orange";
+                                        pickupBtn.style.borderColor = "gray";
+                                        updateAddressId();
+                                    }
+                                );
+
+                                pickupBtn.addEventListener(
+                                    "click",
+                                    function (event) {
+                                        event.preventDefault();
+                                        pickupBtn.classList.add("active");
+                                        deliveryBtn.classList.remove("active");
+                                        pickupLocation.style.display = "block";
+                                        suggestInput.style.display = "none";
+                                        suggestButton.style.display = "none";
+                                        notice.style.display = "none";
+                                        map.style.display = "none";
+                                        pickupLocation.setAttribute(
+                                            "required",
+                                            "required"
+                                        );
+                                        suggestInput.removeAttribute(
+                                            "required"
+                                        );
+                                        addressForm.style.borderColor = "gray";
+                                        pickupBtn.style.borderColor = "orange";
+                                        updateAddressId();
+                                    }
+                                );
+
+                                nextBtn.addEventListener(
+                                    "click",
+                                    function (event) {
+                                        event.preventDefault();
+                                        var addressElement;
+                                        if (
+                                            deliveryBtn.classList.contains(
+                                                "active"
+                                            )
+                                        ) {
+                                            addressElement =
+                                                document.getElementById(
+                                                    "address"
+                                                );
+                                        } else {
+                                            addressElement =
+                                                document.getElementById(
+                                                    "address"
+                                                );
+                                        }
+                                        if (addressElement) {
+                                            console.log(
+                                                "Address:",
+                                                addressElement.value
+                                            );
+                                            addressForm.classList.remove(
+                                                "active"
+                                            );
+                                            paymentForm.classList.add("active");
+                                        }
+                                    }
+                                );
+
+                                prevBtn.addEventListener(
+                                    "click",
+                                    function (event) {
+                                        event.preventDefault();
+                                        addressForm.classList.add("active");
+                                        paymentForm.classList.remove("active");
+                                    }
+                                );
+
+                                suggestInput.addEventListener(
+                                    "input",
+                                    function (event) {
+                                        updateNextButtonState();
+                                    }
+                                );
+
+                                // Инициализация
+                                updateAddressId();
+
+                                ymaps.ready(init);
+
+                                function init() {
+                                    // Подключаем поисковые подсказки к полю ввода.
+                                    var suggestView = new ymaps.SuggestView(
+                                            "address"
+                                        ),
+                                        map,
+                                        placemark;
+
+                                    // При клике по кнопке запускаем верификацию введёных данных.
+                                    $("#button").bind("click", function (e) {
+                                        geocode();
+                                    });
+
+                                    function geocode() {
+                                        // Забираем запрос из поля ввода.
+                                        var request = $("#address").val();
+                                        // Геокодируем введённые данные.
+                                        ymaps.geocode(request).then(
+                                            function (res) {
+                                                var obj = res.geoObjects.get(0),
+                                                    error,
+                                                    hint;
+
+                                                if (obj) {
+                                                    // Об оценке точности ответа геокодера можно прочитать тут: https://tech.yandex.ru/maps/doc/geocoder/desc/reference/precision-docpage/
+                                                    switch (
+                                                        obj.properties.get(
+                                                            "metaDataProperty.GeocoderMetaData.precision"
+                                                        )
+                                                    ) {
+                                                        case "exact":
+                                                            break;
+                                                        case "number":
+                                                        case "near":
+                                                        case "range":
+                                                            error =
+                                                                "Неточный адрес, требуется уточнение";
+                                                            hint =
+                                                                "Уточните номер дома";
+                                                            break;
+                                                        case "street":
+                                                            error =
+                                                                "Неполный адрес, требуется уточнение";
+                                                            hint =
+                                                                "Уточните номер дома";
+                                                            break;
+                                                        case "other":
+                                                        default:
+                                                            error =
+                                                                "Неточный адрес, требуется уточнение";
+                                                            hint =
+                                                                "Уточните адрес";
+                                                    }
+                                                } else {
+                                                    error = "Адрес не найден";
+                                                    hint = "Уточните адрес";
+                                                }
+
+                                                // Если геокодер возвращает пустой массив или неточный результат, то показываем ошибку.
+                                                if (error) {
+                                                    showError(error);
+                                                    showMessage(hint);
+                                                } else {
+                                                    showResult(obj);
+                                                }
+                                            },
+                                            function (e) {
+                                                console.log(e);
+                                            }
+                                        );
+                                    }
+
+                                    function showResult(obj) {
+                                        // Удаляем сообщение об ошибке, если найденный адрес совпадает с поисковым запросом.
+                                        $("#address").removeClass(
+                                            "input_error"
+                                        );
+                                        $("#notice").css("display", "none");
+
+                                        var mapContainer = $("#map"),
+                                            bounds =
+                                                obj.properties.get("boundedBy"),
+                                            // Рассчитываем видимую область для текущего положения пользователя.
+                                            mapState =
+                                                ymaps.util.bounds.getCenterAndZoom(
+                                                    bounds,
+                                                    [
+                                                        mapContainer.width(),
+                                                        mapContainer.height(),
+                                                    ]
+                                                ),
+                                            // Сохраняем полный адрес для сообщения под картой.
+                                            address = [
+                                                obj.getCountry(),
+                                                obj.getAddressLine(),
+                                            ].join(", "),
+                                            // Сохраняем укороченный адрес для подписи метки.
+                                            shortAddress = [
+                                                obj.getThoroughfare(),
+                                                obj.getPremiseNumber(),
+                                                obj.getPremise(),
+                                            ].join(" ");
+
+                                        // Убираем контролы с карты.
+                                        mapState.controls = [];
+                                        // Создаём карту.
+                                        createMap(mapState, shortAddress);
+                                        // Выводим сообщение под картой.
+                                        showMessage(address);
+                                    }
+
+                                    function showError(message) {
+                                        $("#notice").text(message);
+                                        $("#address").addClass("input_error");
+                                        $("#notice").css("display", "block");
+                                        // Удаляем карту.
+                                        if (map) {
+                                            map.destroy();
+                                            map = null;
+                                        }
+                                    }
+
+                                    function createMap(state, caption) {
+                                        // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
+                                        if (!map) {
+                                            map = new ymaps.Map("map", state);
+                                            placemark = new ymaps.Placemark(
+                                                map.getCenter(),
+                                                {
+                                                    iconCaption: caption,
+                                                    balloonContent: caption,
+                                                },
+                                                {
+                                                    preset: "islands#redDotIconWithCaption",
+                                                }
+                                            );
+                                            map.geoObjects.add(placemark);
+                                            // Если карта есть, то выставляем новый центр карты и меняем данные и позицию метки в соответствии с найденным адресом.
+                                        } else {
+                                            map.setCenter(
+                                                state.center,
+                                                state.zoom
+                                            );
+                                            placemark.geometry.setCoordinates(
+                                                state.center
+                                            );
+                                            placemark.properties.set({
+                                                iconCaption: caption,
+                                                balloonContent: caption,
+                                            });
+                                        }
+                                    }
+
+                                    function showMessage(message) {
+                                        $("#messageHeader").text(
+                                            "Данные получены:"
+                                        );
+                                        $("#message").text(message);
+                                    }
+                                }
+                            }
+                        );
+                    </script>
+
+                    <div class="confirmationOverlay" id="confirmationOverlay">
+                        <div id="orderConfirmation">
+                            <h2>Ваш заказ оформлен</h2>
+                            <p>
+                                Подробности вашего заказа можно <br />
+                                ознакомиться в своем профиле
+                            </p>
+                            <a href="account.html">Перейти в профиль</a>
+                        </div>
+                    </div>
+                    <script>
+                        document.addEventListener(
+                            "DOMContentLoaded",
+                            function () {
+                                var radios = document.querySelectorAll(
+                                    'input[type=radio][name="paymentMethodRadio"]'
+                                );
+                                var hiddenInput =
+                                    document.getElementById("paymentMethod");
+
+                                function handleChange() {
+                                    hiddenInput.value = this.value;
+                                }
+
+                                radios.forEach(function (radio) {
+                                    radio.addEventListener(
+                                        "change",
+                                        handleChange
+                                    );
+                                });
+
+                                // Установим начальное значение
+                                handleChange.call(
+                                    document.querySelector(
+                                        'input[type=radio][name="paymentMethodRadio"]:checked'
+                                    )
+                                );
+                            }
+                        );
+                    </script>
+                    <script>
+                        document.addEventListener(
+                            "DOMContentLoaded",
+                            function () {
+                                var confirmationOverlay =
+                                    document.getElementById(
+                                        "confirmationOverlay"
+                                    );
+
+                                document
+                                    .getElementById("submitOrderBtn")
+                                    .addEventListener(
+                                        "click",
+                                        function (event) {
+                                            event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+                                            // Показываем блок с подтверждением заказа
+                                            confirmationOverlay.style.display =
+                                                "block";
+                                        }
+                                    );
+
+                                // Добавляем обработчик события для закрытия формы при клике на overlay
+                                confirmationOverlay.addEventListener(
+                                    "click",
+                                    function () {
+                                        // Перезагружаем страницу
+                                        window.location.reload();
+                                    }
+                                );
+                            }
+                        );
+                    </script>
+                    <script>
+                        document
+                            .getElementById("showFormBtn")
+                            .addEventListener("click", function (event) {
+                                event.stopPropagation();
+                                document.getElementById(
+                                    "orderForm"
+                                ).style.display = "block";
+                            });
+
+                        document.addEventListener("click", function (event) {
+                            var form = document.getElementById("orderForm");
+                            var showFormBtn =
+                                document.getElementById("showFormBtn");
+
+                            if (
+                                event.target !== form &&
+                                event.target !== showFormBtn &&
+                                !form.contains(event.target)
+                            ) {
+                                form.style.display = "none";
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                // Функция для загрузки информации о продуктах в корзине через AJAX
+                function loadCart() {
+                    $.ajax({
+                        type: "GET",
+                        url: "php/cast.php",
+                        dataType: "json",
+                        success: function (data) {
+                            // Отображение информации о продуктах в корзине
+                            displayCart(data);
+
+                            // Вычисление суммы калорий всех продуктов
+                            var totalCalories = 0;
+                            var totalWithDiscount = 0; // Общая сумма заказа с учетом скидки
+                            var totalDiscount = 0; // Общая сумма скидки
+                            data.forEach(function (item) {
+                                // Пересчитываем общие калории для каждого элемента корзины
+                                item.totalCalories =
+                                    parseFloat(item.калорийность) *
+                                    parseInt(item.количество_заказываемого);
+                                // Добавляем к общему количеству калорий текущие калории данного продукта
+                                totalCalories += item.totalCalories;
+
+                                // Расчет общей цены с учетом скидки
+                                var totalWithDiscountForItem =
+                                    item.количество_заказываемого *
+                                    item.цена_за_штуку *
+                                    (1 - item.скидка / 100);
+                                // Добавляем к общей сумме со скидкой сумму текущего продукта
+                                totalWithDiscount += totalWithDiscountForItem;
+
+                                // Расчет суммы скидки для данного продукта
+                                var discountForItem =
+                                    item.количество_заказываемого *
+                                    item.цена_за_штуку *
+                                    (item.скидка / 100);
+                                // Добавляем к общей сумме скидки сумму скидки для текущего продукта
+                                totalDiscount += discountForItem;
+                            });
+
+                            // Вывод суммы калорий в блок totalCalories
+                            $("#totalCalories").text(
+                                totalCalories.toFixed(1) + " ккал"
+                            );
+
+                            // Обновляем текстовый блок с общей суммой заказа с учетом скидки
+                            $("#totalZakaz").text(
+                                "Итого: " +
+                                    totalWithDiscount.toFixed(2) +
+                                    " BYN"
+                            );
+
+                            // Вывод общей скидки
+                            $("#totalDiscount").text(
+                                "Скидка: " + totalDiscount.toFixed(2) + " BYN"
+                            );
+
+                            // Вывод суммы скидки в процентах
+                            var discountPercent =
+                                (totalDiscount /
+                                    (totalWithDiscount + totalDiscount)) *
+                                100;
+                            $("#discountPercent").text(
+                                "Сумма скидки в процентах: " +
+                                    discountPercent.toFixed(2) +
+                                    "%"
+                            );
+                        },
+                    });
+                }
+
+                // Функция для отображения информации о продуктах в корзине
+                function displayCart(cartData) {
+                    var cartContainer2 = $("#cartContainer2");
+                    cartContainer2.empty(); // Очищаем содержимое контейнера
+
+                    // Проверяем, есть ли данные в корзине
+                    if (cartData.length === 0) {
+                        // Если корзина пуста, выводим красивое сообщение
+                        var emptyCartMessage = $("<div>")
+                            .addClass("empty-cart-message")
+                            .css({
+                                "font-size": "30px",
+                                "font-weight": "700",
+                            })
+                            .text("Ваша корзина на данный момент пуста");
+
+                        cartContainer2.append(emptyCartMessage);
+                        $("#submitOrderBtn").hide();
+                        return; // Завершаем функцию, так как нет необходимости в дальнейшем выполнении
+                    } else {
+                        document.getElementById("showFormBtn").disabled = false;
+                    }
+
+                    // Перебираем данные о продуктах в корзине и создаем карточки для отображения
+                    $.each(cartData, function (index, item) {
+                        var card = $("<div>").addClass("card"); // Создаем элемент карточки
+                        var cardBody = $("<div>").addClass("card-body"); // Создаем элемент для содержимого карточки
+
+                        // Ваш JavaScript код для создания карточек продуктов
+                        // Добавьте атрибут data-product-id
+                        var cardItem = $("<div>")
+                            .addClass("card")
+                            .attr("data-product-id", item.код_продукта);
+
+                        // Создаем изображение продукта
+                        var productImage = $("<img>")
+                            .attr("src", item.картинка)
+                            .attr("alt", item.название_продукта)
+                            .addClass("card-img-top");
+
+                        // Создаем название продукта
+                        var productName = $("<h5>")
+                            .text(item.название_продукта)
+                            .addClass("card-title");
+
+                        // Создаем количество и инпут для изменения количества
+                        // Создаем количество и инпут для изменения количества
+                        var quantity = $("<p>").text("Количество: ");
+                        var quantityInput = $("<input>")
+                            .attr("type", "number")
+                            .attr("value", item.количество_заказываемого)
+                            .attr("min", "1")
+                            .attr("max", "99")
+                            .addClass("form-control")
+                            .css("max-width", "100px")
+                            .on("input change", function () {
+                                var value = parseInt($(this).val(), 10);
+                                var min = parseInt($(this).attr("min"), 10);
+                                var max = parseInt($(this).attr("max"), 10);
+
+                                // Корректировка значения, если оно выходит за пределы диапазона
+                                if (value < min) {
+                                    $(this).val(min);
+                                } else if (value > max) {
+                                    $(this).val(max);
+                                }
+                            });
+                        // Добавляем обработчик события input для изменения общей цены при изменении количества
+                        // Добавляем обработчик события input для изменения количества продукта
+                        quantityInput.on("input", function () {
+                            var currentQuantity = parseInt($(this).val());
+                            var productId = item.код_корзины;
+
+                            // Проверяем, является ли текущее значение инпута корректным числом
+                            if (!isNaN(currentQuantity)) {
+                                // Обновляем количество заказываемого продукта в объекте корзины
+                                item.количество_заказываемого = currentQuantity;
+
+                                // Пересчитываем общие калории для данного элемента корзины
+                                item.totalCalories =
+                                    parseFloat(item.калорийность) *
+                                    currentQuantity;
+
+                                // Обновляем общую цену для данного элемента корзины
+                                var total =
+                                    item.цена_за_штуку *
+                                    currentQuantity *
+                                    (1 - item.скидка / 100);
+                                totalPrice.text(
+                                    "Общая цена: " + total.toFixed(2) + " BYN"
+                                );
+
+                                // Пересчитываем общее количество калорий для всей корзины
+                                var totalCalories = 0;
+                                cartData.forEach(function (cartItem) {
+                                    totalCalories += cartItem.totalCalories;
+                                });
+
+                                // Обновляем текст общего количества калорий в блоке totalCalories
+                                $("#totalCalories").text(
+                                    totalCalories.toFixed(1) + " ккал"
+                                );
+
+                                // Обновляем общую сумму заказа с учетом скидки
+                                var totalWithDiscount = 0;
+                                cartData.forEach(function (cartItem) {
+                                    var totalWithDiscountForItem =
+                                        cartItem.количество_заказываемого *
+                                        cartItem.цена_за_штуку *
+                                        (1 - cartItem.скидка / 100);
+                                    totalWithDiscount +=
+                                        totalWithDiscountForItem;
+                                });
+                                $("#totalZakaz").text(
+                                    "Общая сумма заказа: " +
+                                        totalWithDiscount.toFixed(2) +
+                                        " BYN"
+                                );
+
+                                // Обновляем общую скидку
+                                var totalDiscount = 0;
+                                cartData.forEach(function (cartItem) {
+                                    var discountForItem =
+                                        cartItem.количество_заказываемого *
+                                        cartItem.цена_за_штуку *
+                                        (cartItem.скидка / 100);
+                                    totalDiscount += discountForItem;
+                                });
+                                $("#totalDiscount").text(
+                                    "Общая скидка: " +
+                                        totalDiscount.toFixed(2) +
+                                        " BYN"
+                                );
+
+                                // Обновляем сумму скидки в процентах
+                                var discountPercent =
+                                    (totalDiscount /
+                                        (totalWithDiscount + totalDiscount)) *
+                                    100;
+                                $("#discountPercent").text(
+                                    "Сумма скидки в процентах: " +
+                                        discountPercent.toFixed(2) +
+                                        "%"
+                                );
+
+                                // Отправляем AJAX-запрос на сервер для обновления количества продукта
+                                $.ajax({
+                                    type: "POST",
+                                    url: "php/update_quantity.php",
+                                    data: {
+                                        productId: productId,
+                                        quantity: currentQuantity,
+                                    },
+                                    success: function (response) {
+                                        // Обработка успешного ответа от сервера
+                                        console.log(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        // Обработка ошибки
+                                        console.error(xhr.responseText);
+                                    },
+                                });
+                            }
+                        });
+
+                        // Создаем цену за штуку и общую цену
+                        var price = $("<p>")
+                            .text("Цена за штуку: ")
+                            .append(
+                                $("<span>").text(item.цена_за_штуку + " BYN")
+                            );
+                        var totalPrice = $("<p>").text(
+                            "Общая цена: " +
+                                (
+                                    item.количество_заказываемого *
+                                    item.цена_за_штуку *
+                                    (1 - item.скидка / 100)
+                                ).toFixed(2) +
+                                " BYN"
+                        );
+
+                        // Создаем кнопку удаления продукта из корзины
+                        // Создаем элемент картинки вместо кнопки
+                        var deleteButton = $("<img>")
+                            .attr("src", "image/Delete.png") // Укажите путь к вашему изображению
+                            .addClass("delete-icon") // Добавляем класс для стилизации
+                            .on("click", function () {
+                                // Отправляем запрос на удаление продукта через PHP
+                                $.ajax({
+                                    type: "POST",
+                                    url: "php/delete.php", // Укажите правильный путь к файлу удаления
+                                    data: { productId: item.код_корзины }, // Передаем идентификатор продукта для удаления
+                                    success: function () {
+                                        // После успешного удаления обновляем корзину
+                                        loadCart();
+                                    },
+                                    error: function () {
+                                        console.log(
+                                            "Ошибка при удалении продукта из корзины"
+                                        );
+                                    },
+                                });
+                            });
+
+                        // Добавляем класс для стилизации и устанавливаем курсор указывающий на действие
+                        deleteButton
+                            .addClass("delete-icon")
+                            .css("cursor", "pointer");
+
+                        // Добавляем созданные элементы карточки в элемент cardBody
+                        cardBody.append(
+                            productImage,
+                            productName,
+                            quantity,
+                            quantityInput,
+                            price,
+                            totalPrice,
+                            deleteButton
+                        );
+
+                        // Добавляем элемент cardBody к элементу card
+                        card.append(cardBody);
+
+                        // Добавляем карточку к контейнеру корзины
+                        cartContainer2.append(card);
+                    });
+                }
+
+                loadCart();
+            });
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                // Обработчик события клика по кнопке "Оформить заказ"
+                $("#submitOrderBtn").click(function (event) {
+                    // Отменяем стандартное действие кнопки (перезагрузку страницы)
+                    event.preventDefault();
+
+                    // Вызываем функцию для оформления заказа
+                    order();
+                });
+
+                // Функция для оформления заказа
+                function order() {
+                    // Получаем данные из формы
+                    var formData = {
+                        address: $("#address").val(),
+                        paymentMethod: $("#paymentMethod").val(),
+                    };
+
+                    // Отправляем запрос на сервер для оформления заказа
+                    $.ajax({
+                        type: "GET",
+                        url: "php/order.php",
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                alert("Заказ успешно оформлен!"); // Добавляем вызов alert для отображения сообщения
+                            } else {
+                                var errorMessage = response.error;
+                                if (response.message) {
+                                    errorMessage += "\n" + response.message;
+                                }
+                                $("#errorBlock").text(errorMessage);
+                                $("#errorBlock").show();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(
+                                "Ошибка AJAX-запроса:",
+                                xhr,
+                                status,
+                                error
+                            );
+                            $("#errorBlock").text(
+                                "Произошла ошибка при оформлении заказа. Пожалуйста, попробуйте еще раз."
+                            );
+                            $("#errorBlock").show();
+                        },
+                    });
+                }
+            });
+        </script>
+
+        <style>
+            footer {
+                margin-top: 100px;
+                margin-bottom: 50px;
+                display: flex;
+                justify-content: center;
+                gap: 100px;
+                flex-wrap: wrap;
+                padding: 0 15px;
+
+                a:hover {
+                    color: #575757 !important;
+                    font-weight: 400 !important;
+                    font-size: 16px !important;
+                    text-decoration: none !important;
+                }
+            }
+            .footer_logo {
+                max-width: 200px;
+
+                p {
+                    color: #575757 !important;
+                    font-weight: 400 !important;
+                    line-height: 160% !important;
+                    margin-bottom: 60px !important;
+                }
+            }
+
+            .footer_ul {
+                ul {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 24px;
+
+                    a {
+                        color: #575757 !important;
+                        font-weight: 400 !important;
+                        font-size: 16px !important;
+                    }
+                }
+            }
+
+            .footer_ul_2 {
+                ul {
+                    gap: 24px !important;
+                }
+                li {
+                    display: flex;
+                    gap: 24px;
+                    align-items: center;
+                    max-width: 250px;
+                    p {
+                        color: #575757 !important;
+                        margin-top: 15px !important;
+                        font-weight: 400 !important;
+                    }
+                }
+            }
+
+            .footer_netword {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 32px;
+            }
+
+            .nickname {
+                margin-left: 20vw;
+            }
+
+            .logo h1 {
+                font-size: 32px;
+                font-family: "Roboto", sans-serif;
+                font-weight: 900;
+                font-style: normal;
+                color: #fb9333;
+            }
+            .logo span {
+                color: #585858;
+            }
+        </style>
+
+        <script>
+            function toggleMenu() {
+                var menu = document.querySelector(".menu");
+                menu.style.display =
+                    menu.style.display === "none" ? "flex" : "none";
+            }
+        </script>
+        <footer id="contact">
+            <div class="footer_logo">
+                <div class="logo" style="margin-bottom: 20px !important">
+                    <h1>Buter<span>Brod</span></h1>
+                </div>
+                <p>
+                    BeterBrod это пионер полезных продуктов и питательных
+                    веществ
+                </p>
+                <span style="color: #2b2b2b">ButerBrod ©2024</span>
+            </div>
+            <div class="footer_ul">
+                <ul>
+                    <li
+                        style="
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            color: #fb9300 !important;
+                        "
+                    >
+                        Характеристики
+                    </li>
+                    <li><a href="menu.html">Меню</a></li>
+                    <li><a href="menu.html">Промо</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                </ul>
+            </div>
+            <div class="footer_ul_2">
+                <ul>
+                    <li
+                        style="
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            color: #fb9300 !important;
+                        "
+                    >
+                        Свяжитесь с нами
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_01.png" alt="" />
+                        <p>Центральный офис Минск, УЛ. Ленина 19 стр. 7</p>
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_02.png" alt="" />
+                        <p>buter_brod@gmail.com</p>
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_03.png" alt="" />
+                        <p>Звонок по телефону 7573</p>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer_netword">
+                    <a href="https://x.com/kulinariy"
+                        ><img src="image/twitter.png" alt=""
+                    /></a>
+                    <a href="https://www.facebook.com/shef.tj"
+                        ><img src="image/Facebook.png" alt=""
+                    /></a>
+                    <a
+                        href="https://www.instagram.com/zakonbuterbroda?igsh=MWM5bmJwbWRvZWF1Mw=="
+                        ><img src="image/instagram.png" alt=""
+                    /></a>
+                </div>
+                <p
+                    style="
+                        font-weight: 400;
+                        color: #575757;
+                        margin-top: 20px !important;
+                    "
+                >
+                    Можете найти нас
+                </p>
+            </div>
+        </footer>
+    </body>
+</html>

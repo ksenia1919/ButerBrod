@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="konstr.css" />
+        <link rel="stylesheet" href="header.css" />
+    </head>
+    <style>
+        .btn:focus,
+        .btn:focus-visible,
+        button:focus,
+        button:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Убираем обводку при активном состоянии (нажатии мышью) */
+        .btn:active,
+        button:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+    <body>
+        <div style="background-color: #fff5e6">
+            <header>
+                <h1>Buter<span>Brod</span></h1>
+                <div class="navbar">
+                    <div class="menu-toggle" onclick="toggleMenu()">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <ul class="menu">
+                        <li>
+                            <a href="index.html">Главная</a>
+                        </li>
+                        <li>
+                            <a
+                                style="color: #fb9300; font-weight: bold"
+                                href="menu.html"
+                                >Меню</a
+                            >
+                        </li>
+                        <li><a href="#contact">Контакты</a></li>
+                        <li><a href="about.html">О нас</a></li>
+                        <li>
+                            <div class="button_mobile">
+                                <div
+                                    id="mobileCartContainer"
+                                    style="display: flex; align-items: center"
+                                >
+                                    <img
+                                        src="image/Combined-Shape.png"
+                                        alt="Cart Image"
+                                        style="
+                                            display: inline-block;
+                                            vertical-align: middle;
+                                        "
+                                    />
+                                    <a
+                                        href="Cast.html"
+                                        style="
+                                            display: inline-block;
+                                            vertical-align: middle;
+                                            margin-left: 5px;
+                                            color: #575757;
+                                            font-size: 18px;
+                                            font-family: 'Poppins', sans-serif;
+                                            font-weight: 500;
+                                        "
+                                        >Покупки</a
+                                    >
+                                </div>
+                                <div
+                                    style="color: black"
+                                    id="mobileUsernameContainer"
+                                ></div>
+                                <button
+                                    id="mobileAccountButton"
+                                    class="btn btn-primary account"
+                                >
+                                    Войти
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal_account">
+                    <div
+                        style="
+                            display: flex;
+                            gap: 10px;
+                            align-items: center;
+                            color: white;
+                            font-size: 20px;
+                        "
+                    >
+                        <div class="button_pc">
+                            <div
+                                id="cartContainer"
+                                style="display: flex; align-items: center"
+                            >
+                                <img
+                                    src="image/Combined-Shape.png"
+                                    alt="Cart Image"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                    "
+                                />
+                                <a
+                                    href="Cast.html"
+                                    style="
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                        margin-left: 5px;
+                                        color: #575757;
+                                        font-size: 18px;
+                                        font-family: 'Poppins', sans-serif;
+                                        font-weight: 500;
+                                    "
+                                    >Покупки</a
+                                >
+                            </div>
+                            <div
+                                style="color: black"
+                                id="usernameContainer"
+                            ></div>
+                            <button
+                                id="accountButton"
+                                class="btn btn-primary account"
+                            >
+                                Войти
+                            </button>
+                        </div>
+
+                        <script>
+                            $(document).ready(function () {
+                                // Загрузка данных пользователя из сессии
+                                $.ajax({
+                                    type: "GET",
+                                    url: "php/check_session.php",
+                                    dataType: "json",
+                                    encode: true,
+                                }).done(function (data) {
+                                    if (data.authenticated) {
+                                        var usernameContainer =
+                                            $("#usernameContainer");
+                                        if (
+                                            usernameContainer.text().trim() ===
+                                            ""
+                                        ) {
+                                            // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                            var firstName = data.name
+                                                .trim()
+                                                .charAt(0)
+                                                .toUpperCase();
+                                            usernameContainer.text(firstName);
+                                            // Устанавливаем стили для контейнера с буквой
+                                            usernameContainer.css({
+                                                "background-color": "#FB9333",
+                                                "border-radius": "50%",
+                                                width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                                height: "60px",
+                                                display: "flex",
+                                                "justify-content": "center",
+                                                "align-items": "center",
+                                                "font-family":
+                                                    "Poppins, sans-serif",
+                                                "font-weight": "500",
+                                                "font-style": "normal",
+                                                "font-size": "32px",
+                                                color: "white",
+                                            });
+                                            // Создаем ссылку на страницу аккаунта и оборачиваем ею содержимое usernameContainer
+                                            var accountLink = $(
+                                                '<a style="text-decoration:none;">'
+                                            )
+                                                .attr("href", "account.html")
+                                                .append(
+                                                    usernameContainer.contents()
+                                                );
+                                            usernameContainer
+                                                .empty()
+                                                .append(accountLink);
+                                        }
+                                        $("#accountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                        $("#cartContainer").show(); // Показываем блок корзины
+                                    } else {
+                                        $("#cartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                        $("#accountButton").show(); // Показываем кнопку "Аккаунт"
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <script>
+                            $(document).ready(function () {
+                                // Загрузка данных пользователя из сессии
+                                $.ajax({
+                                    type: "GET",
+                                    url: "php/check_session.php",
+                                    dataType: "json",
+                                    encode: true,
+                                }).done(function (data) {
+                                    if (data.authenticated) {
+                                        var usernameContainer = $(
+                                            "#mobileUsernameContainer"
+                                        );
+                                        if (
+                                            usernameContainer.text().trim() ===
+                                            ""
+                                        ) {
+                                            // Получаем первую букву имени и устанавливаем ее в качестве текста
+                                            var firstName = data.name
+                                                .trim()
+                                                .charAt(0)
+                                                .toUpperCase();
+                                            usernameContainer.text(firstName);
+                                            // Устанавливаем стили для контейнера с буквой
+                                            usernameContainer.css({
+                                                "background-color": "#FB9333",
+                                                "border-radius": "50%",
+                                                width: "60px", // Задаем фиксированную ширину и высоту для создания круглого контейнера
+                                                height: "60px",
+                                                display: "flex",
+                                                "justify-content": "center",
+                                                "align-items": "center",
+                                                "font-family":
+                                                    "Poppins, sans-serif",
+                                                "font-weight": "500",
+                                                "font-style": "normal",
+                                                "font-size": "32px",
+                                                color: "white",
+                                                cursor: "pointer", // Добавляем стиль курсора
+                                                margin: "0 auto",
+                                            });
+                                        }
+                                        $("#mobileAccountButton").hide(); // Скрываем кнопку "Аккаунт"
+                                        $("#mobileCartContainer").show(); // Показываем блок корзины
+
+                                        // Добавляем обработчик события click для перенаправления на account.html
+                                        usernameContainer.click(function () {
+                                            window.location.href =
+                                                "account.html";
+                                        });
+                                    } else {
+                                        $("#mobileCartContainer").hide(); // Скрываем блок корзины, если нет сессии
+                                        $("#mobileAccountButton").show(); // Показываем кнопку "Аккаунт"
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+
+                    <div id="modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2 style="color: #fb9300">Регистрация</h2>
+                            <form id="registrationForm" method="post">
+                                <div class="form-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="name"
+                                        name="name"
+                                        minlength="5"
+                                        placeholder="Введите имя"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                        name="email"
+                                        placeholder="Введите почту"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="phone"
+                                        name="phone"
+                                        minlength="10"
+                                        placeholder="Введите телефон"
+                                    />
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Зарегистрироваться
+                                </button>
+                                <div id="registrationResult"></div>
+                            </form>
+
+                            <p>
+                                У вас уже есть аккаунт?<a
+                                    href="#"
+                                    style="color: rgb(46, 84, 255)"
+                                    id="loginLink"
+                                    >Авторизуйтесь</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="loginForm" class="modal" style="display: none">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2 style="color: #fb9300">Авторизация</h2>
+                            <form id="authForm" method="post">
+                                <div class="form-group">
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="loginPhone"
+                                        name="phone"
+                                        minlength="10"
+                                        placeholder="Введите номер телефона"
+                                    />
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Войти
+                                </button>
+                                <div id="loginResult"></div>
+                            </form>
+
+                            <p>
+                                Нет аккаунта?<a
+                                    href="#"
+                                    style="color: rgb(46, 84, 255)"
+                                    id="registerLink"
+                                    >Зарегистрируйтесь</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="text_menu">
+                <h2>Главная / Меню <span>/ Конструктор</span></h2>
+                <h1>Конструктор</h1>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var registrationForm =
+                    document.getElementById("registrationForm");
+                var nameInput = document.getElementById("name");
+                var emailInput = document.getElementById("email");
+                var phoneInput = document.getElementById("phone");
+                var submitButton = document.querySelector(
+                    "#registrationForm button[type='submit']"
+                );
+
+                // Функция для проверки заполненности всех полей формы регистрации
+                function checkRegistrationForm() {
+                    if (
+                        nameInput.value.trim() !== "" &&
+                        emailInput.value.trim() !== "" &&
+                        phoneInput.value.trim() !== ""
+                    ) {
+                        submitButton.removeAttribute("disabled");
+                    } else {
+                        submitButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Вызываем функцию проверки при изменении содержимого полей
+                nameInput.addEventListener("input", checkRegistrationForm);
+                emailInput.addEventListener("input", checkRegistrationForm);
+                phoneInput.addEventListener("input", checkRegistrationForm);
+
+                // Проверяем форму при загрузке страницы
+                checkRegistrationForm();
+
+                var authForm = document.getElementById("authForm");
+                var loginPhoneInput = document.getElementById("loginPhone");
+                var loginButton = document.querySelector(
+                    "#authForm button[type='submit']"
+                );
+
+                // Функция для проверки заполненности всех полей формы авторизации
+                function checkAuthForm() {
+                    if (loginPhoneInput.value.trim() !== "") {
+                        loginButton.removeAttribute("disabled");
+                    } else {
+                        loginButton.setAttribute("disabled", "disabled");
+                    }
+                }
+
+                // Вызываем функцию проверки при изменении содержимого поля
+                loginPhoneInput.addEventListener("input", checkAuthForm);
+
+                // Проверяем форму при загрузке страницы
+                checkAuthForm();
+            });
+        </script>
+
+        <script>
+            function toggleMenu() {
+                var menu = document.querySelector(".menu");
+                menu.style.display =
+                    menu.style.display === "none" ? "flex" : "none";
+            }
+        </script>
+
+        <div class="container">
+            <div class="content">
+                <div class="Shag" style="margin-top: 50px">
+                    <h2>Шаг 1</h2>
+                    <span>Хлеб</span>
+                </div>
+                <div class="section" id="bread-section">
+                    <!-- Здесь будет добавлен хлеб -->
+                </div>
+                <div class="Shag">
+                    <h2>Шаг 2</h2>
+                    <span>Добавки</span>
+                </div>
+                <div class="section" id="toppings-section">
+                    <!-- Здесь будут добавлены добавки -->
+                </div>
+                <div class="Shag">
+                    <h2>Шаг 3</h2>
+                    <span>Зелень</span>
+                </div>
+                <div class="section" id="greens-section">
+                    <!-- Здесь будет добавлена зелень -->
+                </div>
+            </div>
+            <div class="result" id="result-section">
+                <h2>Ваш выбор</h2>
+                <div id="selected-ingredients">
+                    <!-- Динамическое отображение выбранных ингредиентов -->
+                </div>
+                <input
+                    type="number"
+                    id="quantity"
+                    min="1"
+                    max="99"
+                    value="1"
+                /><br />
+                <script>
+                    document
+                        .getElementById("quantity")
+                        .addEventListener("input", function () {
+                            var value = parseInt(this.value);
+                            if (value > 99) {
+                                this.value = 99;
+                            } else if (value < 1) {
+                                this.value = 1;
+                            }
+                        });
+                </script>
+                <div id="total-info">
+                    <p><span id="total-calories">0</span> ккал</p>
+                    <p><span id="total-price">0</span> BYN</p>
+                </div>
+                <button id="add-to-cart" disabled>Добавить в корзину</button>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const breadSection = document.getElementById("bread-section");
+                const toppingsSection =
+                    document.getElementById("toppings-section");
+                const greensSection = document.getElementById("greens-section");
+                const selectedIngredients = document.getElementById(
+                    "selected-ingredients"
+                );
+                const totalCalories = document.getElementById("total-calories");
+                const totalPrice = document.getElementById("total-price");
+                const quantityInput = document.getElementById("quantity");
+                const addToCartButton = document.getElementById("add-to-cart");
+
+                let selected = {
+                    bread: null,
+                    toppings: [],
+                    greens: [],
+                };
+
+                function fetchProducts(category, section) {
+                    fetch(`fetch_products.php?category=${category}`)
+                        .then((response) => response.json())
+                        .then((products) => {
+                            renderProducts(products, section, category);
+                        });
+                }
+
+                function renderProducts(products, section, category) {
+                    section.innerHTML = "";
+                    products.forEach((product) => {
+                        const productDiv = document.createElement("div");
+                        productDiv.classList.add("product");
+                        productDiv.dataset.category = category;
+                        productDiv.dataset.productId = product.код_продукта;
+
+                        productDiv.innerHTML = `
+                    <img src="${product.картинка}" alt="${product.название_продукта}">
+                    <h3>${product.название_продукта}</h3>
+                    <p>${product.описание_продукта}</p>
+                    <p>${product.калорийность} ккал</p>
+                    <p style="font-size: 18px; margin-top: 3px; color: black; font-weight:700;">${product.цена_за_штуку} BYN</p>
+                `;
+
+                        productDiv.addEventListener("click", () => {
+                            const selectedProduct = document.querySelector(
+                                `.product[data-category="${category}"][data-product-id="${product.код_продукта}"]`
+                            );
+                            if (
+                                selectedProduct.classList.contains("selected")
+                            ) {
+                                selectedProduct.classList.remove("selected");
+                                selectedProduct.style.border = "none";
+                                removeFromSelected(product, category);
+                            } else {
+                                selectedProduct.classList.add("selected");
+                                selectedProduct.style.border = "2px solid red";
+                                selectProduct(product, category);
+                            }
+                        });
+
+                        section.appendChild(productDiv);
+                    });
+                }
+
+                function isSelected(product, category) {
+                    if (category === 4) {
+                        return selected.bread === product;
+                    } else if (category === 5) {
+                        return selected.toppings.some(
+                            (t) => t.код_продукта === product.код_продукта
+                        );
+                    } else if (category === 6) {
+                        return selected.greens.some(
+                            (g) => g.код_продукта === product.код_продукта
+                        );
+                    }
+                }
+
+                function selectProduct(product, category) {
+                    if (category === 4) {
+                        selected.bread =
+                            selected.bread === product ? null : product;
+                    } else if (category === 5) {
+                        const index = selected.toppings.findIndex(
+                            (t) => t.код_продукта === product.код_продукта
+                        );
+                        if (index !== -1) {
+                            selected.toppings.splice(index, 1);
+                        } else if (selected.toppings.length < 5) {
+                            selected.toppings.push(product);
+                        }
+                    } else if (category === 6) {
+                        const index = selected.greens.findIndex(
+                            (g) => g.код_продукта === product.код_продукта
+                        );
+                        if (index !== -1) {
+                            selected.greens.splice(index, 1);
+                        } else if (selected.greens.length < 2) {
+                            selected.greens.push(product);
+                        }
+                    }
+
+                    updateSelections();
+                    updateProductBorders();
+                }
+
+                function updateProductBorders() {
+                    // Сначала убираем обводку у всех продуктов
+                    document
+                        .querySelectorAll(".product")
+                        .forEach((productDiv) => {
+                            productDiv.classList.remove("selected");
+                            productDiv.style.border = "none";
+                        });
+
+                    // Затем добавляем обводку только для выбранных продуктов
+                    if (selected.bread) {
+                        const breadProduct = document.querySelector(
+                            `.product[data-category="4"][data-product-id="${selected.bread.код_продукта}"]`
+                        );
+                        if (breadProduct) {
+                            breadProduct.classList.add("selected");
+                            breadProduct.style.border = "2px solid #fb9300 ";
+                        }
+                    }
+
+                    selected.toppings.forEach((topping) => {
+                        const toppingProduct = document.querySelector(
+                            `.product[data-category="5"][data-product-id="${topping.код_продукта}"]`
+                        );
+                        if (toppingProduct) {
+                            toppingProduct.classList.add("selected");
+                            toppingProduct.style.border = "2px solid #fb9300 ";
+                        }
+                    });
+
+                    selected.greens.forEach((green) => {
+                        const greenProduct = document.querySelector(
+                            `.product[data-category="6"][data-product-id="${green.код_продукта}"]`
+                        );
+                        if (greenProduct) {
+                            greenProduct.classList.add("selected");
+                            greenProduct.style.border = "2px solid #fb9300 ";
+                        }
+                    });
+                }
+
+                function removeFromSelected(product, category) {
+                    const currentSelection =
+                        selected[
+                            category === 4
+                                ? "bread"
+                                : category === 5
+                                ? "toppings"
+                                : "greens"
+                        ];
+                    const index = currentSelection.findIndex(
+                        (item) => item.код_продукта === product.код_продукта
+                    );
+                    if (index !== -1) {
+                        currentSelection.splice(index, 1);
+                        updateSelections();
+                    }
+                }
+
+                function clearSelectedClass(selector) {
+                    document.querySelectorAll(selector).forEach((div) => {
+                        div.classList.remove("selected");
+                        div.style.border = "none";
+                        if (
+                            !div.classList.contains("selected") &&
+                            div.classList.contains("no-selected")
+                        ) {
+                            div.classList.remove("no-selected");
+                        }
+                    });
+                }
+
+                function updateSelections() {
+                    selectedIngredients.innerHTML = "";
+                    let totalCaloriesValue = 0;
+                    let totalPriceValue = 0;
+                    let productNameList = [];
+
+                    if (selected.bread) {
+                        selectedIngredients.innerHTML += `<p>${selected.bread.название_продукта}</p>`;
+                        productNameList.push(selected.bread.название_продукта);
+                        totalCaloriesValue += parseFloat(
+                            selected.bread.калорийность
+                        );
+                        totalPriceValue += parseFloat(
+                            selected.bread.цена_за_штуку
+                        );
+                    }
+
+                    selected.toppings.forEach((topping) => {
+                        selectedIngredients.innerHTML += `<p>${topping.название_продукта}</p>`;
+                        productNameList.push(topping.название_продукта);
+                        totalCaloriesValue += parseFloat(topping.калорийность);
+                        totalPriceValue += parseFloat(topping.цена_за_штуку);
+                    });
+
+                    selected.greens.forEach((green) => {
+                        selectedIngredients.innerHTML += `<p>${green.название_продукта}</p>`;
+                        productNameList.push(green.название_продукта);
+                        totalCaloriesValue += parseFloat(green.калорийность);
+                        totalPriceValue += parseFloat(green.цена_за_штуку);
+                    });
+
+                    // Обновляем цену и калории в зависимости от количества
+                    const quantity = parseInt(quantityInput.value);
+                    totalCaloriesValue *= quantity;
+                    totalPriceValue *= quantity;
+
+                    totalCalories.textContent = totalCaloriesValue.toFixed(2); // Округляем до двух знаков после запятой
+                    totalPrice.textContent = totalPriceValue.toFixed(2); // Округляем до двух знаков после запятой
+
+                    const productName = productNameList.join(", ");
+                    addToCartButton.dataset.productName = productName;
+                    addToCartButton.dataset.totalCalories =
+                        totalCaloriesValue.toFixed(2); // Округляем до двух знаков после запятой
+                    addToCartButton.dataset.totalPrice =
+                        totalPriceValue.toFixed(2); // Округляем до двух знаков после запятой
+                    updateAddToCartButtonState();
+                }
+
+                // Функция для проверки сессии на сервере
+                function checkSession() {
+                    return fetch("session_check.php")
+                        .then((response) => response.json())
+                        .then((data) => {
+                            return data.loggedIn;
+                        })
+                        .catch((error) => {
+                            console.error("Ошибка при проверке сессии:", error);
+                            return false;
+                        });
+                }
+
+                // Обработчик события для кнопки "Добавить в корзину"
+                addToCartButton.addEventListener("click", async () => {
+                    // Проверяем сессию перед добавлением в корзину
+                    const isLoggedIn = await checkSession();
+
+                    if (isLoggedIn) {
+                        // Если пользователь авторизован, продолжаем выполнение кода
+                        const quantity = parseInt(quantityInput.value, 10);
+                        const productName = addToCartButton.dataset.productName;
+                        const totalCaloriesValue =
+                            addToCartButton.dataset.totalCalories;
+                        const totalPriceValue =
+                            addToCartButton.dataset.totalPrice;
+                        const productTable =
+                            document.getElementById("product-table");
+
+                        // Здесь продолжается код для добавления продукта в корзину
+                        fetchProducts(7, productTable);
+                        fetch("add_product.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                название_продукта: "Собранный бутерброд",
+                                картинка: "image/собранный.png",
+                                описание_продукта: "Состав: " + productName,
+                                код_категории: 7,
+                                калорийность: parseFloat(totalCaloriesValue),
+                                цена_за_штуку: parseFloat(totalPriceValue),
+                                наличие: "есть",
+                                скидка: 0,
+                                количество: quantity,
+                            }),
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (data.success) {
+                                    alert("Продукт успешно добавлен!");
+                                    fetchProducts(7, productTable);
+                                } else {
+                                    alert(
+                                        "Ошибка при добавлении продукта: " +
+                                            data.error
+                                    );
+                                }
+                            })
+                            .catch((error) => {
+                                console.error("Ошибка:", error);
+                                alert(
+                                    "Произошла ошибка при отправке запроса на сервер."
+                                );
+                            });
+                    } else {
+                        // Если пользователь не авторизован, выводим сообщение или перенаправляем на страницу входа
+                        alert(
+                            "Для добавления продукта необходимо авторизоваться!"
+                        );
+                        // Здесь можно добавить код для перенаправления пользователя на страницу входа
+                    }
+                });
+
+                quantityInput.addEventListener("input", () => {
+                    updateSelections();
+                });
+
+                function updateAddToCartButtonState() {
+                    const isBreadSelected = selected.bread !== null;
+                    const areToppingsSelected = selected.toppings.length > 0;
+                    const areGreensSelected = selected.greens.length > 0;
+
+                    if (
+                        isBreadSelected &&
+                        areToppingsSelected &&
+                        areGreensSelected
+                    ) {
+                        addToCartButton.disabled = false; // Включаем кнопку
+                    } else {
+                        addToCartButton.disabled = true; // Отключаем кнопку
+                    }
+                }
+
+                fetchProducts(4, breadSection);
+                fetchProducts(5, toppingsSection);
+                fetchProducts(6, greensSection);
+            });
+        </script>
+
+        <footer id="contact">
+            <div class="footer_logo">
+                <div class="logo" style="margin-bottom: 20px !important">
+                    <h1>Buter<span>Brod</span></h1>
+                </div>
+                <p>
+                    BeterBrod это пионер полезных продуктов и питательных
+                    веществ
+                </p>
+                <span style="color: #2b2b2b">ButerBrod ©2024</span>
+            </div>
+            <div class="footer_ul">
+                <ul>
+                    <li
+                        style="
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            color: #fb9300 !important;
+                        "
+                    >
+                        Характеристики
+                    </li>
+                    <li><a href="menu.html">Меню</a></li>
+                    <li><a href="menu.html">Промо</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                </ul>
+            </div>
+            <div class="footer_ul_2">
+                <ul>
+                    <li
+                        style="
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            color: #fb9300 !important;
+                        "
+                    >
+                        Свяжитесь с нами
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_01.png" alt="" />
+                        <p>Центральный офис Минск, УЛ. Ленина 19 стр. 7</p>
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_02.png" alt="" />
+                        <p>buter_brod@gmail.com</p>
+                    </li>
+                    <li>
+                        <img src="image/icon_footer_03.png" alt="" />
+                        <p>Звонок по телефону 7573</p>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div id="adminPanelLink"></div>
+
+                <script>
+                    // Создаем AJAX-запрос к вашему PHP-файлу
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("GET", "check_admin.php", true);
+
+                    // Обработчик события при получении ответа от сервера
+                    xhr.onload = function () {
+                        if (xhr.status >= 200 && xhr.status < 400) {
+                            // Получаем данные из ответа в формате JSON
+                            var response = JSON.parse(xhr.responseText);
+
+                            // Проверяем, является ли пользователь администратором
+                            if (response.isAdmin) {
+                                // Если пользователь администратор, создаем ссылку на админ панель
+                                var adminPanelLink =
+                                    document.getElementById("adminPanelLink");
+                                adminPanelLink.innerHTML =
+                                    '<a href="admin.php">Перейти в админ панель</a>';
+
+                                // Автоматически нажимаем на ссылку
+                                adminPanelLink.querySelector("a").click();
+                            }
+                        }
+                    };
+
+                    // Отправляем запрос
+                    xhr.send();
+                </script>
+                <div class="footer_netword">
+                    <a href="https://x.com/kulinariy"
+                        ><img src="image/twitter.png" alt=""
+                    /></a>
+                    <a href="https://www.facebook.com/shef.tj"
+                        ><img src="image/Facebook.png" alt=""
+                    /></a>
+                    <a
+                        href="https://www.instagram.com/zakonbuterbroda?igsh=MWM5bmJwbWRvZWF1Mw=="
+                        ><img src="image/instagram.png" alt=""
+                    /></a>
+                </div>
+                <p
+                    style="
+                        font-weight: 400;
+                        color: #575757;
+                        margin-top: 20px !important;
+                    "
+                >
+                    Можете найти нас
+                </p>
+            </div>
+        </footer>
+        <script src="php/script.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="script/modal_window.js"></script>
+        <script src="script/register.js"></script>
+        <script src="script/login.js"></script>
+    </body>
+</html>

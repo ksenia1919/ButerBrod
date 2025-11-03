@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background-color: #ffffff;
+	font-family: 'Poppins', sans-serif;
+}
+
+ul {
+	list-style-type: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+a {
+	padding: 0;
+	margin: 0;
+}
+ul {
+	margin: 0;
+	padding: 0;
+}
+/* Common styles */
+
+.background-color {
+	background-color: #fff5e6;
+	padding-bottom: 120px;
+}
+
+.main_history {
+	margin-top: 150px;
+	margin-bottom: 100px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 105px;
+}
+
+.history_card {
+	display: flex;
+	flex-wrap: wrap;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 28px;
+}
+
+.top_card {
+	margin-top: 58px;
+}
+
+.history_text {
+	max-width: 416px;
+	padding: 10px;
+
+	h2 {
+		color: #fb9333;
+		font-size: 28px;
+		letter-spacing: -2%;
+		font-weight: 600;
+		margin: 0;
+	}
+
+	h1 {
+		color: #2b2b2b;
+		font-size: 48px;
+		margin: 0;
+		margin: 8px 0;
+		letter-spacing: -4%;
+		font-weight: 600;
+	}
+
+	p {
+		color: #828282;
+		font-size: 16px;
+		line-height: 160%;
+		letter-spacing: -2%;
+		font-weight: 400;
+	}
+}
+
+.race {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 33px;
+	padding: 10px;
+}
+
+.card_race {
+	max-width: 358px;
+	h2 {
+		color: #2b2b2b;
+		font-size: 24px;
+		line-height: 180%;
+		letter-spacing: -2%;
+		font-weight: 600;
+	}
+
+	p {
+		color: #828282;
+		font-size: 16px;
+		line-height: 180%;
+		letter-spacing: -2%;
+		font-weight: 400;
+	}
+}
+
+.info_text {
+	margin-top: 183px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 66px;
+}
+
+.card_info {
+	max-width: 520px;
+	padding: 10px;
+
+	h1 {
+		color: #2b2b2b;
+		font-size: 48px;
+		margin-bottom: 14px !important;
+		letter-spacing: -4%;
+		font-weight: 700;
+		margin: 0;
+	}
+
+	p {
+		color: #828282;
+		font-size: 16px;
+		letter-spacing: -2%;
+		line-height: 180%;
+		font-weight: 400;
+	}
+}
+
+.povar {
+	margin-top: 180px;
+	padding: 10px;
+	text-align: center;
+
+	h2 {
+		color: #fb9333;
+		font-size: 28px;
+		letter-spacing: -2%;
+		font-weight: 400;
+		margin: 0;
+	}
+
+	h1 {
+		color: #2f3137;
+		font-size: 48px;
+		letter-spacing: -2%;
+		line-height: 140%;
+		font-weight: 600;
+		margin: 0;
+	}
+}
+
+.list_povar {
+	margin-top: 48px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 75px;
+	padding: 10px;
+	text-align: center;
+
+	h1 {
+		color: #2f3137;
+		font-size: 24px;
+		letter-spacing: -2%;
+		line-height: 140%;
+		font-weight: 600;
+		margin: 0;
+	}
+
+	h2 {
+		color: #707070;
+		font-size: 20px;
+		letter-spacing: -4%;
+		font-weight: 400;
+		margin: 0;
+	}
+}
+
+footer {
+	margin-top: 100px;
+	margin-bottom: 50px;
+	display: flex;
+	justify-content: center;
+	gap: 100px;
+	flex-wrap: wrap;
+	padding: 0 15px;
+
+	a:hover {
+		color: #575757 !important;
+		font-weight: 400 !important;
+		font-size: 16px !important;
+		text-decoration: none !important;
+	}
+}
+.footer_logo {
+	max-width: 200px;
+
+	p {
+		color: #575757 !important;
+		font-weight: 400 !important;
+		line-height: 160% !important;
+		margin-bottom: 60px !important;
+	}
+}
+
+.footer_ul {
+	ul {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+
+		a {
+			color: #575757 !important;
+			font-weight: 400 !important;
+			font-size: 16px !important;
+		}
+	}
+}
+
+.footer_ul_2 {
+	ul {
+		gap: 24px !important;
+	}
+	li {
+		display: flex;
+		gap: 24px;
+		align-items: center;
+		max-width: 250px;
+		p {
+			color: #575757 !important;
+			margin-top: 15px !important;
+			font-weight: 400 !important;
+		}
+	}
+}
+
+.footer_netword {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 32px;
+}
+
+.nickname {
+	margin-left: 20vw;
+}
+
+.logo h1 {
+	font-size: 32px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 900;
+	font-style: normal;
+	color: #fb9333;
+}
+.logo span {
+	color: #585858;
+}
